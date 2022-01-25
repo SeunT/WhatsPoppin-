@@ -3,10 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C02B07026AB52D600BF28A3 /* SetupPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C02B06F26AB52D600BF28A3 /* SetupPictureViewController.swift */; };
+		2C02B07326AB55E600BF28A3 /* User_info.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C02B07226AB55E600BF28A3 /* User_info.swift */; };
+		2C02B07526AB636400BF28A3 /* NameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C02B07426AB636400BF28A3 /* NameViewController.swift */; };
+		2C0D176726BF1897007B9400 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176626BF1897007B9400 /* EventTableViewCell.swift */; };
+		2C0D176926BF6626007B9400 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176826BF6626007B9400 /* Events.swift */; };
+		2C0D176B26BF669C007B9400 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176A26BF669C007B9400 /* ProfileViewController.swift */; };
+		2C0D176D26BF66D0007B9400 /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176C26BF66D0007B9400 /* AddEventViewController.swift */; };
+		2C0D176F26BF6702007B9400 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176E26BF6702007B9400 /* EventViewController.swift */; };
+		2C1301C22661BBA1002EAF0F /* NumberPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */; };
+		2C1301C42661BD9F002EAF0F /* VerifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */; };
+		2C5DA9A826C08ED200863C80 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C5DA9A726C08ED200863C80 /* TableViewController.swift */; };
 		2CD93F662656127D00D63569 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F652656127D00D63569 /* AppDelegate.swift */; };
 		2CD93F682656127D00D63569 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F672656127D00D63569 /* SceneDelegate.swift */; };
 		2CD93F6A2656127D00D63569 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F692656127D00D63569 /* ViewController.swift */; };
@@ -18,6 +29,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C02B06F26AB52D600BF28A3 /* SetupPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupPictureViewController.swift; sourceTree = "<group>"; };
+		2C02B07226AB55E600BF28A3 /* User_info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User_info.swift; sourceTree = "<group>"; };
+		2C02B07426AB636400BF28A3 /* NameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
+		2C0D176626BF1897007B9400 /* EventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
+		2C0D176826BF6626007B9400 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
+		2C0D176A26BF669C007B9400 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		2C0D176C26BF66D0007B9400 /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
+		2C0D176E26BF6702007B9400 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
+		2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPassthrough.swift; sourceTree = "<group>"; };
+		2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyViewController.swift; sourceTree = "<group>"; };
+		2C5DA9A726C08ED200863C80 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		2CD93F622656127D00D63569 /* WhatsPoppin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatsPoppin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD93F652656127D00D63569 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2CD93F672656127D00D63569 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -44,9 +66,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C02B07126AB55CE00BF28A3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2C02B07226AB55E600BF28A3 /* User_info.swift */,
+				2C0D176826BF6626007B9400 /* Events.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		2CD93F592656127D00D63569 = {
 			isa = PBXGroup;
 			children = (
+				2C02B07126AB55CE00BF28A3 /* Model */,
 				2CD93F642656127D00D63569 /* WhatsPoppin */,
 				2CD93F632656127D00D63569 /* Products */,
 				C3EB7DB44E1F1C883FB2BA7D /* Pods */,
@@ -70,9 +102,18 @@
 				2CD93F672656127D00D63569 /* SceneDelegate.swift */,
 				2CD93F692656127D00D63569 /* ViewController.swift */,
 				2CD93F6B2656127D00D63569 /* Main.storyboard */,
+				2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */,
+				2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */,
 				2CD93F6E2656127E00D63569 /* Assets.xcassets */,
 				2CD93F702656127E00D63569 /* LaunchScreen.storyboard */,
 				2CD93F732656127E00D63569 /* Info.plist */,
+				2C02B07426AB636400BF28A3 /* NameViewController.swift */,
+				2C02B06F26AB52D600BF28A3 /* SetupPictureViewController.swift */,
+				2C0D176626BF1897007B9400 /* EventTableViewCell.swift */,
+				2C0D176A26BF669C007B9400 /* ProfileViewController.swift */,
+				2C0D176C26BF66D0007B9400 /* AddEventViewController.swift */,
+				2C0D176E26BF6702007B9400 /* EventViewController.swift */,
+				2C5DA9A726C08ED200863C80 /* TableViewController.swift */,
 			);
 			path = WhatsPoppin;
 			sourceTree = "<group>";
@@ -91,7 +132,6 @@
 				416E3BBC12918D84E844D48C /* Pods-WhatsPoppin.debug.xcconfig */,
 				8BE3FE933E1DBAEDCB1BB2FE /* Pods-WhatsPoppin.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -211,8 +251,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CD93F6A2656127D00D63569 /* ViewController.swift in Sources */,
+				2C5DA9A826C08ED200863C80 /* TableViewController.swift in Sources */,
+				2C0D176D26BF66D0007B9400 /* AddEventViewController.swift in Sources */,
+				2C0D176926BF6626007B9400 /* Events.swift in Sources */,
 				2CD93F662656127D00D63569 /* AppDelegate.swift in Sources */,
+				2C02B07326AB55E600BF28A3 /* User_info.swift in Sources */,
+				2C02B07526AB636400BF28A3 /* NameViewController.swift in Sources */,
 				2CD93F682656127D00D63569 /* SceneDelegate.swift in Sources */,
+				2C0D176B26BF669C007B9400 /* ProfileViewController.swift in Sources */,
+				2C1301C42661BD9F002EAF0F /* VerifyViewController.swift in Sources */,
+				2C0D176F26BF6702007B9400 /* EventViewController.swift in Sources */,
+				2C02B07026AB52D600BF28A3 /* SetupPictureViewController.swift in Sources */,
+				2C0D176726BF1897007B9400 /* EventTableViewCell.swift in Sources */,
+				2C1301C22661BBA1002EAF0F /* NumberPassthrough.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
