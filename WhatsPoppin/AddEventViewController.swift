@@ -159,7 +159,7 @@ class AddEventViewController: UIViewController, UIImagePickerControllerDelegate,
                         
                         geoP = GeoPoint(latitude: (placemarks?.first?.location?.coordinate.latitude)!, longitude: (placemarks?.first?.location?.coordinate.longitude)!)
                         
-                        User.addEventObject(user: self.userDefault.string(forKey: "UserID")!, coord: geoP, desc: self.des.text!, image: self.url, time: self.start_time.date, addy: self.addy.text!)
+                      //  User.addEventObject(user: self.userDefault.string(forKey: "UserID")!, coord: geoP, desc: self.des.text!, image: self.url, time: self.start_time.date, addy: self.addy.text!)
                        
                         
                         

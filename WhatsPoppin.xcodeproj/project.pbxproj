@@ -13,11 +13,28 @@
 		2C0D176726BF1897007B9400 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176626BF1897007B9400 /* EventTableViewCell.swift */; };
 		2C0D176926BF6626007B9400 /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176826BF6626007B9400 /* Events.swift */; };
 		2C0D176B26BF669C007B9400 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176A26BF669C007B9400 /* ProfileViewController.swift */; };
-		2C0D176D26BF66D0007B9400 /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176C26BF66D0007B9400 /* AddEventViewController.swift */; };
-		2C0D176F26BF6702007B9400 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0D176E26BF6702007B9400 /* EventViewController.swift */; };
 		2C1301C22661BBA1002EAF0F /* NumberPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */; };
 		2C1301C42661BD9F002EAF0F /* VerifyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */; };
-		2C5DA9A826C08ED200863C80 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C5DA9A726C08ED200863C80 /* TableViewController.swift */; };
+		2C336D3029787641008C4105 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C336D2F29787641008C4105 /* SettingsViewController.swift */; };
+		2C336D3929789B92008C4105 /* coreModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2C336D3729789B92008C4105 /* coreModel.xcdatamodeld */; };
+		2C336D3B297A06D0008C4105 /* UserCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C336D3A297A06D0008C4105 /* UserCache.swift */; };
+		2C3C3550289C2170009F9368 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3C354F289C2170009F9368 /* MapViewController.swift */; };
+		2C4157222949527D00CDEDDE /* MapEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C4157212949527D00CDEDDE /* MapEventViewController.swift */; };
+		2C65FF1B28D64F7D00229A1C /* Step1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF1A28D64F7D00229A1C /* Step1ViewController.swift */; };
+		2C65FF1D28D64FF200229A1C /* Step2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF1C28D64FF200229A1C /* Step2ViewController.swift */; };
+		2C65FF1F28D64FFE00229A1C /* Step3ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF1E28D64FFE00229A1C /* Step3ViewController.swift */; };
+		2C65FF2128D6507400229A1C /* Step4ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF2028D6507400229A1C /* Step4ViewController.swift */; };
+		2C65FF2328D787B000229A1C /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF2228D787B000229A1C /* LocationManager.swift */; };
+		2C65FF2528D78CDF00229A1C /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF2428D78CDF00229A1C /* SearchViewController.swift */; };
+		2C7745B7297DCA9100FAF5FE /* NewProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745B6297DCA9100FAF5FE /* NewProfileViewController.swift */; };
+		2C7745BD297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745BC297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift */; };
+		2C7745BF297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745BE297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift */; };
+		2C7745C1297DD55100FAF5FE /* ProfileTabsCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745C0297DD55100FAF5FE /* ProfileTabsCollectionReusableView.swift */; };
+		2C7745C3297F1F8500FAF5FE /* FormTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745C2297F1F8500FAF5FE /* FormTableViewCell.swift */; };
+		2C7A3BEB2967DA1400AAA982 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7A3BEA2967DA1400AAA982 /* ImageCache.swift */; };
+		2C7A3BED29748DD600AAA982 /* EventCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7A3BEC29748DD600AAA982 /* EventCache.swift */; };
+		2CC818A32966354000AC6487 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC818A22966354000AC6487 /* EventViewController.swift */; };
+		2CCB0797295FBAD000E452A8 /* EntryPointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCB0796295FBAD000E452A8 /* EntryPointViewController.swift */; };
 		2CD93F662656127D00D63569 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F652656127D00D63569 /* AppDelegate.swift */; };
 		2CD93F682656127D00D63569 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F672656127D00D63569 /* SceneDelegate.swift */; };
 		2CD93F6A2656127D00D63569 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F692656127D00D63569 /* ViewController.swift */; };
@@ -25,6 +42,7 @@
 		2CD93F6F2656127E00D63569 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CD93F6E2656127E00D63569 /* Assets.xcassets */; };
 		2CD93F722656127E00D63569 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CD93F702656127E00D63569 /* LaunchScreen.storyboard */; };
 		2CD93F7A2656129000D63569 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2CD93F792656129000D63569 /* GoogleService-Info.plist */; };
+		2CF75D582977563300CEABA1 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF75D572977563300CEABA1 /* EditProfileViewController.swift */; };
 		5CE4C8618BB3F0304B071628 /* Pods_WhatsPoppin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75D94D92785866D039EAC1F2 /* Pods_WhatsPoppin.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,11 +53,28 @@
 		2C0D176626BF1897007B9400 /* EventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
 		2C0D176826BF6626007B9400 /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		2C0D176A26BF669C007B9400 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		2C0D176C26BF66D0007B9400 /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
-		2C0D176E26BF6702007B9400 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPassthrough.swift; sourceTree = "<group>"; };
 		2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyViewController.swift; sourceTree = "<group>"; };
-		2C5DA9A726C08ED200863C80 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		2C336D2F29787641008C4105 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		2C336D3829789B92008C4105 /* coreModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = coreModel.xcdatamodel; sourceTree = "<group>"; };
+		2C336D3A297A06D0008C4105 /* UserCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCache.swift; sourceTree = "<group>"; };
+		2C3C354F289C2170009F9368 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		2C4157212949527D00CDEDDE /* MapEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapEventViewController.swift; sourceTree = "<group>"; };
+		2C65FF1A28D64F7D00229A1C /* Step1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step1ViewController.swift; sourceTree = "<group>"; };
+		2C65FF1C28D64FF200229A1C /* Step2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step2ViewController.swift; sourceTree = "<group>"; };
+		2C65FF1E28D64FFE00229A1C /* Step3ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step3ViewController.swift; sourceTree = "<group>"; };
+		2C65FF2028D6507400229A1C /* Step4ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step4ViewController.swift; sourceTree = "<group>"; };
+		2C65FF2228D787B000229A1C /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		2C65FF2428D78CDF00229A1C /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		2C7745B6297DCA9100FAF5FE /* NewProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProfileViewController.swift; sourceTree = "<group>"; };
+		2C7745BC297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		2C7745BE297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
+		2C7745C0297DD55100FAF5FE /* ProfileTabsCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTabsCollectionReusableView.swift; sourceTree = "<group>"; };
+		2C7745C2297F1F8500FAF5FE /* FormTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormTableViewCell.swift; sourceTree = "<group>"; };
+		2C7A3BEA2967DA1400AAA982 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		2C7A3BEC29748DD600AAA982 /* EventCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCache.swift; sourceTree = "<group>"; };
+		2CC818A22966354000AC6487 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
+		2CCB0796295FBAD000E452A8 /* EntryPointViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryPointViewController.swift; sourceTree = "<group>"; };
 		2CD93F622656127D00D63569 /* WhatsPoppin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatsPoppin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD93F652656127D00D63569 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2CD93F672656127D00D63569 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -49,6 +84,7 @@
 		2CD93F712656127E00D63569 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2CD93F732656127E00D63569 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2CD93F792656129000D63569 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		2CF75D572977563300CEABA1 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		416E3BBC12918D84E844D48C /* Pods-WhatsPoppin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhatsPoppin.debug.xcconfig"; path = "Target Support Files/Pods-WhatsPoppin/Pods-WhatsPoppin.debug.xcconfig"; sourceTree = "<group>"; };
 		75D94D92785866D039EAC1F2 /* Pods_WhatsPoppin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WhatsPoppin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BE3FE933E1DBAEDCB1BB2FE /* Pods-WhatsPoppin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WhatsPoppin.release.xcconfig"; path = "Target Support Files/Pods-WhatsPoppin/Pods-WhatsPoppin.release.xcconfig"; sourceTree = "<group>"; };
@@ -71,13 +107,63 @@
 			children = (
 				2C02B07226AB55E600BF28A3 /* User_info.swift */,
 				2C0D176826BF6626007B9400 /* Events.swift */,
+				2C65FF2228D787B000229A1C /* LocationManager.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		2C65FF1928D64F5700229A1C /* Event Creation */ = {
+			isa = PBXGroup;
+			children = (
+				2C65FF1A28D64F7D00229A1C /* Step1ViewController.swift */,
+				2C65FF1C28D64FF200229A1C /* Step2ViewController.swift */,
+				2C65FF1E28D64FFE00229A1C /* Step3ViewController.swift */,
+				2C65FF2028D6507400229A1C /* Step4ViewController.swift */,
+				2C65FF2428D78CDF00229A1C /* SearchViewController.swift */,
+			);
+			path = "Event Creation";
+			sourceTree = "<group>";
+		};
+		2C7745B8297DD0C100FAF5FE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2C7745BB297DD45D00FAF5FE /* Headers */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2C7745BA297DD43A00FAF5FE /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				2C7745BC297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift */,
+				2C7745C2297F1F8500FAF5FE /* FormTableViewCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		2C7745BB297DD45D00FAF5FE /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				2C7745BE297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift */,
+				2C7745C0297DD55100FAF5FE /* ProfileTabsCollectionReusableView.swift */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		2C7A3BE92967DA0600AAA982 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				2C7A3BEA2967DA1400AAA982 /* ImageCache.swift */,
+				2C7A3BEC29748DD600AAA982 /* EventCache.swift */,
+				2C336D3A297A06D0008C4105 /* UserCache.swift */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 		2CD93F592656127D00D63569 = {
 			isa = PBXGroup;
 			children = (
+				2C7A3BE92967DA0600AAA982 /* Cache */,
 				2C02B07126AB55CE00BF28A3 /* Model */,
 				2CD93F642656127D00D63569 /* WhatsPoppin */,
 				2CD93F632656127D00D63569 /* Products */,
@@ -97,11 +183,15 @@
 		2CD93F642656127D00D63569 /* WhatsPoppin */ = {
 			isa = PBXGroup;
 			children = (
+				2C7745BA297DD43A00FAF5FE /* Cells */,
+				2C7745B8297DD0C100FAF5FE /* Views */,
+				2C65FF1928D64F5700229A1C /* Event Creation */,
 				2CD93F792656129000D63569 /* GoogleService-Info.plist */,
 				2CD93F652656127D00D63569 /* AppDelegate.swift */,
 				2CD93F672656127D00D63569 /* SceneDelegate.swift */,
 				2CD93F692656127D00D63569 /* ViewController.swift */,
 				2CD93F6B2656127D00D63569 /* Main.storyboard */,
+				2C3C354F289C2170009F9368 /* MapViewController.swift */,
 				2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */,
 				2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */,
 				2CD93F6E2656127E00D63569 /* Assets.xcassets */,
@@ -111,9 +201,13 @@
 				2C02B06F26AB52D600BF28A3 /* SetupPictureViewController.swift */,
 				2C0D176626BF1897007B9400 /* EventTableViewCell.swift */,
 				2C0D176A26BF669C007B9400 /* ProfileViewController.swift */,
-				2C0D176C26BF66D0007B9400 /* AddEventViewController.swift */,
-				2C0D176E26BF6702007B9400 /* EventViewController.swift */,
-				2C5DA9A726C08ED200863C80 /* TableViewController.swift */,
+				2C4157212949527D00CDEDDE /* MapEventViewController.swift */,
+				2CCB0796295FBAD000E452A8 /* EntryPointViewController.swift */,
+				2CC818A22966354000AC6487 /* EventViewController.swift */,
+				2CF75D572977563300CEABA1 /* EditProfileViewController.swift */,
+				2C336D2F29787641008C4105 /* SettingsViewController.swift */,
+				2C336D3729789B92008C4105 /* coreModel.xcdatamodeld */,
+				2C7745B6297DCA9100FAF5FE /* NewProfileViewController.swift */,
 			);
 			path = WhatsPoppin;
 			sourceTree = "<group>";
@@ -250,20 +344,38 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C7A3BEB2967DA1400AAA982 /* ImageCache.swift in Sources */,
+				2C336D3B297A06D0008C4105 /* UserCache.swift in Sources */,
+				2C65FF1B28D64F7D00229A1C /* Step1ViewController.swift in Sources */,
 				2CD93F6A2656127D00D63569 /* ViewController.swift in Sources */,
-				2C5DA9A826C08ED200863C80 /* TableViewController.swift in Sources */,
-				2C0D176D26BF66D0007B9400 /* AddEventViewController.swift in Sources */,
+				2C7745C1297DD55100FAF5FE /* ProfileTabsCollectionReusableView.swift in Sources */,
+				2CC818A32966354000AC6487 /* EventViewController.swift in Sources */,
+				2C65FF1F28D64FFE00229A1C /* Step3ViewController.swift in Sources */,
 				2C0D176926BF6626007B9400 /* Events.swift in Sources */,
 				2CD93F662656127D00D63569 /* AppDelegate.swift in Sources */,
+				2C7745C3297F1F8500FAF5FE /* FormTableViewCell.swift in Sources */,
+				2C65FF2128D6507400229A1C /* Step4ViewController.swift in Sources */,
+				2C336D3029787641008C4105 /* SettingsViewController.swift in Sources */,
+				2CF75D582977563300CEABA1 /* EditProfileViewController.swift in Sources */,
 				2C02B07326AB55E600BF28A3 /* User_info.swift in Sources */,
 				2C02B07526AB636400BF28A3 /* NameViewController.swift in Sources */,
+				2C336D3929789B92008C4105 /* coreModel.xcdatamodeld in Sources */,
 				2CD93F682656127D00D63569 /* SceneDelegate.swift in Sources */,
 				2C0D176B26BF669C007B9400 /* ProfileViewController.swift in Sources */,
+				2C65FF2328D787B000229A1C /* LocationManager.swift in Sources */,
 				2C1301C42661BD9F002EAF0F /* VerifyViewController.swift in Sources */,
-				2C0D176F26BF6702007B9400 /* EventViewController.swift in Sources */,
+				2C7745BD297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift in Sources */,
+				2CCB0797295FBAD000E452A8 /* EntryPointViewController.swift in Sources */,
+				2C7745BF297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift in Sources */,
+				2C4157222949527D00CDEDDE /* MapEventViewController.swift in Sources */,
+				2C65FF1D28D64FF200229A1C /* Step2ViewController.swift in Sources */,
+				2C65FF2528D78CDF00229A1C /* SearchViewController.swift in Sources */,
+				2C7A3BED29748DD600AAA982 /* EventCache.swift in Sources */,
 				2C02B07026AB52D600BF28A3 /* SetupPictureViewController.swift in Sources */,
 				2C0D176726BF1897007B9400 /* EventTableViewCell.swift in Sources */,
+				2C3C3550289C2170009F9368 /* MapViewController.swift in Sources */,
 				2C1301C22661BBA1002EAF0F /* NumberPassthrough.swift in Sources */,
+				2C7745B7297DCA9100FAF5FE /* NewProfileViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,16 +524,23 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XVGTX649JC;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9Y494N8DR2;
 				INFOPLIST_FILE = WhatsPoppin/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "WhatsPoppin?";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Medulla-Logic.WhatsPoppin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -432,16 +551,23 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XVGTX649JC;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9Y494N8DR2;
 				INFOPLIST_FILE = WhatsPoppin/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "WhatsPoppin?";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Medulla-Logic.WhatsPoppin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -467,6 +593,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2C336D3729789B92008C4105 /* coreModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2C336D3829789B92008C4105 /* coreModel.xcdatamodel */,
+			);
+			currentVersion = 2C336D3829789B92008C4105 /* coreModel.xcdatamodel */;
+			path = coreModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 2CD93F5A2656127D00D63569 /* Project object */;
 }

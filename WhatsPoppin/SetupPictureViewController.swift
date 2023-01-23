@@ -7,28 +7,125 @@
 
 import UIKit
 import Firebase
+import CoreData
 class SetupPictureViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    @IBOutlet weak var profilepic: UIImageView!{
-        didSet {
-            profilepic.layer.borderWidth = 1
-               profilepic.layer.masksToBounds = false
-            profilepic.layer.borderColor = UIColor.gray.cgColor
-               profilepic.layer.cornerRadius = profilepic.frame.height/2
-               profilepic.clipsToBounds = true
-         }
-     }
-    
+
+    let continue_next: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("CONTINUE", for: .normal)
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        button.addTarget(self, action: #selector(continue_Tapped), for: .touchUpInside)
+        button.setTitleColor(customColor, for: .normal) 
+        return button
+    }()
+    let addpp: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        button.addTarget(self, action: #selector(addpp_Tapped), for: .touchUpInside)
+        button.tintColor = customColor
+        return button
+    }()
+    let  profilepic: UIImageView = {
+            let imageView = UIImageView()
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.contentMode = .scaleAspectFit
+            imageView.layer.borderWidth = 1
+            imageView.layer.masksToBounds = true
+            imageView.layer.borderColor = UIColor.gray.cgColor
+            imageView.layer.cornerRadius = imageView.frame.height/2
+            imageView.contentMode = .scaleAspectFit
+            imageView.clipsToBounds = true
+            imageView.layer.borderWidth = 2
+            return imageView
+        }()
+    let activitySpinner: UIActivityIndicatorView = {
+            let activitySpinner = UIActivityIndicatorView(style: .medium)
+            activitySpinner.translatesAutoresizingMaskIntoConstraints = false
+            activitySpinner.hidesWhenStopped = true
+            let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+            activitySpinner.color = customColor
+            return activitySpinner
+        }()
     var User:User_info =  User_info()
-    let userDefault = UserDefaults.standard
     var name:String!
     var user_url:String!
+    var imagdat:Data!
+    var useruuid:String!
+    let userDefault = UserDefaults.standard
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
+        configure_const()
+        
+     
+        if let uuid = userDefault.object(forKey: "uuid") as? String
+        {
+            // use the uuid here
+            useruuid = uuid
+        }
+           
+        
+      
     }
     
-    @IBAction func Addpicture(_ sender: Any) {
+    func configure_const()
+    {
+        view.addSubview(profilepic)
+        view.addSubview(addpp)
+        view.addSubview(continue_next)
+        view.addSubview(activitySpinner)
+            NSLayoutConstraint.activate([
+                profilepic.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                profilepic.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+                profilepic.heightAnchor.constraint(equalToConstant: 100)
+            ])
+     
+            NSLayoutConstraint.activate([
+                addpp.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -90),
+                addpp.topAnchor.constraint(equalTo: profilepic.bottomAnchor, constant: 90),
+                addpp.heightAnchor.constraint(equalToConstant: 20)
+            ])
+            
+        
+            NSLayoutConstraint.activate([
+                continue_next.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                continue_next.topAnchor.constraint(equalTo: profilepic.bottomAnchor, constant: 250)
+            ])
+        // Add constraints for activity spinner
+        NSLayoutConstraint.activate([
+            activitySpinner.topAnchor.constraint(equalTo: profilepic.topAnchor,constant: 150),
+            activitySpinner.bottomAnchor.constraint(equalTo: profilepic.bottomAnchor),
+            activitySpinner.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            activitySpinner.centerXAnchor.constraint(equalTo: profilepic.centerXAnchor),
+                activitySpinner.centerYAnchor.constraint(equalTo: profilepic.centerYAnchor),
+            activitySpinner.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+
+
+
+      
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let scrollView = UIScrollView()
+        scrollView.clipsToBounds = true
+        scrollView.frame = view.bounds
+        let size = scrollView.frame.width/2
+        profilepic.frame = CGRect(x: (scrollView.frame.width-size)/2,
+                                  y: 100,
+                                  width: size,
+                                  height: size)
+        profilepic.layer.cornerRadius = profilepic.frame.width/2.0
+
+
+    }
+    
+    @objc func addpp_Tapped() {
         let picker = UIImagePickerController()
         picker.delegate = self
         
@@ -38,10 +135,8 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 let picker = UIImagePickerController()
                 picker.delegate = self
-                picker.allowsEditing = false
-                picker.sourceType = UIImagePickerController.SourceType.camera
-                picker.cameraCaptureMode = .photo
-                picker.modalPresentationStyle = .fullScreen
+                picker.sourceType = .camera
+                picker.allowsEditing = true
                 self.present(picker,animated: true,completion: nil)
                
                 
@@ -61,6 +156,7 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
             picker.sourceType = .photoLibrary
             picker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)!
             picker.modalPresentationStyle = .popover
+            picker.allowsEditing = true
             self.present(picker, animated: true, completion: nil)
                 
                
@@ -72,61 +168,90 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
         self.present(alerto, animated: true)
         
     }
-    
-  
+
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]){
-// Local variable inserted by Swift 4.2 migrator.
+        let group = DispatchGroup()
+        // Local variable inserted by Swift 4.2 migrator.
         let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
-    //    let imageName = NSUUID().uuidString
-      // let storageRef = Storage.storage().reference().child("\(imageName).png")
         picker .dismiss(animated: true, completion: nil)
-        
-        profilepic.image=info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage
-       
-        
-        
-        
-        
-        //User.addPP(image: (pp.image?.pngData())!)
+
+        guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage.rawValue] as? UIImage else {
+                  return
+              }
+
+        guard let imageData = selectedImage.pngData() else { return }
+        imagdat = imageData
+        profilepic.image = selectedImage
+
         let imageName = NSUUID().uuidString
 
-        let storageRef = Storage.storage().reference().child("Profiles/\(imageName).png") //Load the Firebase storage
-        
+        let storageRef = Storage.storage().reference().child("profiles/\(useruuid!)/\(imageName).png") //Load the Firebase storage
+
         if let uploadData = profilepic.image!.pngData()
         {
+            group.enter()
+            disableViews()
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, err) in
                 if let error = err {
                     print(error)
                     return
                 }
-                storageRef.downloadURL(completion: { [self] (url, err) in
+                storageRef.downloadURL(completion: { (url, err) in
                     if let err = err {
                         print(err)
                         return
                     }
-                    
-                    
-                   user_url = url!.absoluteString
+                    self.user_url = url?.absoluteString
+                    group.leave()
                 })
             })
         }
+        group.notify(queue: .main)
+        {
+            self.enableViews()
+        }
+    }
+    func disableViews()
+    {
+        activitySpinner.isHidden = false
+        activitySpinner.startAnimating()
+        addpp.alpha = 0.5
+        addpp.isUserInteractionEnabled = false
+        addpp.isEnabled = false
+        profilepic.alpha = 0.5
+        continue_next.alpha = 0.5
+        continue_next.isUserInteractionEnabled = false
+        continue_next.isEnabled = false
     }
     
-    @IBAction func done_setup(_ sender: Any)
+    func enableViews()
     {
-        if user_url == nil
+        addpp.alpha = 1
+        addpp.isUserInteractionEnabled = true
+        addpp.isEnabled = true
+        activitySpinner.isHidden = true
+        activitySpinner.stopAnimating()
+        profilepic.alpha = 1
+        continue_next.alpha = 1
+        continue_next.isUserInteractionEnabled = true
+        continue_next.isEnabled = true
+    
+    }
+
+    @objc func continue_Tapped()
+    {
+        if imagdat == nil
         {
             let alert = UIAlertController(title: "Please add a picture", message: nil, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             self.present(alert, animated: true)
-        }
-        else
+        }else
         {
-            self.User.setup(user: self.userDefault.string(forKey: "UserID")!, image: user_url, nm: self.name)
-            
-            let controller = self.storyboard?.instantiateViewController(identifier: "Nav2") as? UINavigationController
-            self.view.window?.rootViewController = controller
-            self.view.window?.makeKeyAndVisible()
+                self.User.setup(user: useruuid, image: user_url, nm: self.name, pfp: imagdat)
+                
+                let controller = self.storyboard?.instantiateViewController(identifier: "Nav3") as? UINavigationController
+                self.view.window?.rootViewController = controller
+                self.view.window?.makeKeyAndVisible()
         }
     }
     
@@ -145,16 +270,5 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
     fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
         return input.rawValue
     }
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

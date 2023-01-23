@@ -9,20 +9,44 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var signin: UIButton!
     
+    private let signinB :UIButton = {
+        let button = UIButton()
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("SIGN IN WITH PHONE NUMBER", for: .normal)
+        button.setTitleColor(customColor, for: .normal)
+//        button.layer.cornerRadius = 5
+//        button.layer.borderWidth = 1
+//        button.layer.borderColor = customColor.cgColor
+//        button.backgroundColor = .secondarySystemBackground
+        return button
+    }()
     override func viewDidLoad() {
-        signin.center = view.center
-        signin.autoresizingMask = [.flexibleLeftMargin, .flexibleTopMargin, .flexibleRightMargin, .flexibleBottomMargin]
-        super.viewDidLoad()
+
+        
+            super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        signinB.addTarget(self, action: #selector(continue_next), for: .touchUpInside)
         // Do any additional setup after loading the view.
+        view.addSubview(signinB)
+        NSLayoutConstraint.activate([
+            signinB.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
+            signinB.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            signinB.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            signinB.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
+
     
-    func setAppropriateFontSize( butt:UIButton){
-        let maxFontSize = butt.frame.height
-        butt.titleLabel!.font = UIFont(name: "Helvetica", size: maxFontSize)
-        butt.titleLabel!.adjustsFontSizeToFitWidth = true
-        butt.titleLabel!.minimumScaleFactor = 0.01
+
+    @objc func continue_next()
+    {
+        let vc = NumberPassthrough()
+//        vc.title =
+        navigationController?.pushViewController(vc, animated: true)
+
     }
+ 
 }
 

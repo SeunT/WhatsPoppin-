@@ -11,4 +11,6 @@ target 'WhatsPoppin' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'
   pod 'GeoFire/Utils'
+  pod 'FloatingPanel'
+  pod 'gRPC-Core'
 end

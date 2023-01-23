@@ -11,17 +11,39 @@ import Firebase
 class VerifyViewController: UIViewController {
     let db = Firestore.firestore()
     var User:User_info =  User_info()
+    var Event:Events = Events()
     var Number:String!
     var verifyID:String!
     var test:Bool?
-    @IBOutlet weak var otpOu: UITextField!
-    let userDefault = UserDefaults.standard
-    override func viewDidLoad() {
-        super.viewDidLoad()
 
+    @IBOutlet weak var continue_next: UIButton!
+    let activitySpinner: UIActivityIndicatorView = {
+            let activitySpinner = UIActivityIndicatorView(style: .medium)
+            activitySpinner.translatesAutoresizingMaskIntoConstraints = false
+            activitySpinner.hidesWhenStopped = true
+            let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+            activitySpinner.color = customColor
+            return activitySpinner
+        }()
+    let loggingInAlert = UIAlertController(title: "Loading...", message: nil, preferredStyle: .alert)
+
+    @IBOutlet weak var otpOu: UITextField!
+
+    override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        loggingInAlert.view.addSubview(activitySpinner)
+        NSLayoutConstraint.activate([
+            activitySpinner.centerXAnchor.constraint(equalTo: loggingInAlert.view.centerXAnchor),
+            activitySpinner.centerYAnchor.constraint(equalTo: loggingInAlert.view.centerYAnchor)
+        ])
+        
+
+        
         // Do any additional setup after loading the view.
     }
     
+
     
     @IBAction func verifyOtp(_ sender: Any)
     {
@@ -30,61 +52,55 @@ class VerifyViewController: UIViewController {
         let _ = verifyID
         let credentials = PhoneAuthProvider.provider().credential(withVerificationID: verifyID, verificationCode: otpOu.text!)
         
-        Auth.auth().signIn(with: credentials)
-        { (results, error) in
-              if  error == nil
-                {
-                    
-                    
-                    
-                    print(results!.user.uid)
-                    self.userDefault.setValue((results?.user.uid), forKey: "UserID")
-                    self.userDefault.synchronize()
-                    
-                    self.db.collection("Users").document(results!.user.uid).getDocument { (doc, erro) in
-                        if erro == nil
-                            {
-                          
-                            
-                                if !(doc!.exists)
-                                    { //account not created yet
-                                        self.view.window?.rootViewController = homeViewController
-                                        self.view.window?.makeKeyAndVisible()
-                                    }
-                                else if (doc!.exists)
-                                    { //account is already created
-                                    let controller = self.storyboard?.instantiateViewController(identifier: "Nav2") as? UINavigationController
-                                    self.view.window?.rootViewController = controller
-                                    self.view.window?.makeKeyAndVisible()
-                                    }
-                                
-                            }
-                       
-                    }
-                }
-            else
-              {
+         continue_next.isEnabled = false
+         continue_next.isUserInteractionEnabled = false
+         continue_next.alpha = 0.5
+         
+         
+         present(self.loggingInAlert, animated: true, completion: nil)
+         activitySpinner.startAnimating()
+       User.getOrCreateUser(cred: credentials)
+        { return_num in
+            if return_num == 1
+            {
+                //need to create user
+                self.view.window?.rootViewController = homeViewController
+                self.view.window?.makeKeyAndVisible()
+            }
+            else if return_num == 2
+            {
                 
+                //log in user
+   
+                self.Event.loadUserEvents(){
+                    res in
+                    
+                   
+                    DispatchQueue.main.async
+                    {
+                        self.activitySpinner.stopAnimating()
+                        self.activitySpinner.removeFromSuperview()
+                        self.loggingInAlert.dismiss(animated: true, completion: nil)
+                        let controller = self.storyboard?.instantiateViewController(identifier: "Nav3") as? UINavigationController
+                        self.view.window?.rootViewController = controller
+                        self.view.window?.makeKeyAndVisible()
+                       }
+                  
+                }
+             
+                
+            }
+            else
+            {
+
                 let alert = UIAlertController(title: "Error", message: "Invalid code. Please try again", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                 self.present(alert, animated: true)
                 
-                //error verifying phone number
-              }
+            }
             
         }
+      
     }
-        
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

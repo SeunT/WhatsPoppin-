@@ -11,25 +11,37 @@ class NameViewController: UIViewController {
 
     @IBOutlet weak var Name: UITextField!
     
+    @IBOutlet weak var continue_next: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        continue_next.titleLabel?.adjustsFontSizeToFitWidth = true;
+        continue_next.titleLabel?.minimumScaleFactor = 0.5;
         // Do any additional setup after loading the view.
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
-       
-                if(segue.identifier == "Name2Setup")
+        if(Name.text!.isEmpty)
+        {
+            let alert = UIAlertController(title: "Error", message: "Please enter a Name", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+            
+        }
+        else
+        {
+            if(segue.identifier == "Name2Setup")
+            {
+                if let destination: SetupPictureViewController = segue.destination as? SetupPictureViewController
                 {
-                    if let destination: SetupPictureViewController = segue.destination as? SetupPictureViewController
-                    {
-                        
-                       
-                        destination.name = self.Name.text!
-                        
-                    }
+                    
+                    
+                    destination.name = self.Name.text!
+                    
                 }
+            }
+        }
     
     }
     /*
