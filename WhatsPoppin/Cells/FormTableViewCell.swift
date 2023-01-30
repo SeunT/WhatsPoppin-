@@ -74,15 +74,11 @@ class FormTableViewCell: UITableViewCell, UITextFieldDelegate{
         
 
     }
-    //MARK: - Field
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool
-    {
-        model?.value = textField.text
-        guard let model = model else {
-            return true
+    func saveButtonTapped(){
+            model?.value = field.text
+            guard let model = model else {
+               return
+            }
+            delegate?.formTableViewCell(self, didUpdateField: model)
         }
-        delegate?.formTableViewCell(self, didUpdateField: model)
-        textField.resignFirstResponder()
-        return true
-    }
 }

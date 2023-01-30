@@ -22,22 +22,41 @@ init(ID: String, latitude: Double, longitude: Double) {
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
-    @IBOutlet weak var profile_b: UIButton!
+    
     
     let manager = CLLocationManager()
-    @IBOutlet weak var map:MKMapView!
+//    @IBOutlet weak var map:MKMapView!
+    private let formLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .label
+        label.numberOfLines = 1
+        return label
+        
+    }()
+    let map:MKMapView = {
+        let Map = MKMapView()
+        Map.mapType = .standard
+        Map.tintColor = .darkGray
+        Map.translatesAutoresizingMaskIntoConstraints = false
+        return Map
+    }()
     var User:User_info =  User_info()
     var Event:Events = Events()
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.addSubview(map)
+        map.delegate = self
+        map.frame = view.bounds
         configureNavigationBar()
-        map.mapType = .standard
-        map.tintColor = .darkGray
+//        map.mapType = .standard
+//        map.tintColor = .darkGray
         let geoCoder = CLGeocoder();
         if #available(iOS 13.0, *) {
             self.overrideUserInterfaceStyle = .dark
         }
          
+        
 
         // Do any additional setup after loading the view.
     }
@@ -49,7 +68,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        map.delegate = self
+
         manager.desiredAccuracy = kCLLocationAccuracyBest //more battery
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
@@ -191,28 +210,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return annotationView
     }
     
-    @IBAction func returned(segue: UIStoryboardSegue)
-    {
-        if let sourceView = segue.source as? ProfileViewController
-        {
-
-            
-
-
-        }
-    }
 
     @objc func continue_next()
     {
 
-
-        let vc = NewProfileViewController()
+   
+        let vc = NewProfileViewController(currentUser: true, currId:(UserCache.shared.getUser()?.uuid)!)
         vc.title = "Profile"
         navigationController?.pushViewController(vc, animated: true)
-
-//            let controller = self.storyboard?.instantiateViewController(identifier: "ProfileVC") as? UIViewController
-//            self.view.window?.rootViewController = controller
-//            self.view.window?.makeKeyAndVisible()
 
     }
  

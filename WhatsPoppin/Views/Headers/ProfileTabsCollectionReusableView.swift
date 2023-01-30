@@ -25,7 +25,7 @@ class ProfileTabsCollectionReusableView: UICollectionReusableView
         button.clipsToBounds = true
         let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
         button.tintColor = customColor
-        button.setBackgroundImage(UIImage(systemName: "square.grid.2x2"), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "square.grid.3x3"), for: .normal)
         return button
     }()
     private let listButton:UIButton =
@@ -47,15 +47,17 @@ class ProfileTabsCollectionReusableView: UICollectionReusableView
     }
     @objc private func didTapGridButton()
     {
-        gridButton.tintColor = .systemBlue
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        gridButton.tintColor = customColor
         listButton.tintColor = .lightGray
         delegate?.didTapGridButtonTab()
         
     }
     @objc private func didTapListButton()
     {
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
         gridButton.tintColor = .lightGray
-        listButton.tintColor = .systemBlue
+        listButton.tintColor = customColor
         delegate?.didTapListButtonTab()
         
     }

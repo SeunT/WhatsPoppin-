@@ -7,6 +7,7 @@
 import UIKit
 import Firebase
 import CoreData
+import SDWebImage
 class ProfileViewController: UIViewController, UINavigationControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
   
     
@@ -90,9 +91,10 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 
         let user = User.getUserData()
         name_label.text = user?.name!
-        profileImageView.image = UIImage(data: (user?.pfp)!)
-    
-        imagdat = user?.pfp!
+        
+//        profileImageView.image = UIImage(data: (user?.pfp)!)
+//
+//        imagdat = user?.pfp!
         // Do any additional setup after loading the view.
         configure_const()
 
@@ -103,6 +105,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
 //        collectionView.reloadData()
 //    }
 //
+    
     func configure_const() {
         view.addSubview(profileImageView)
         view.addSubview(name_label)

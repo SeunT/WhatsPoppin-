@@ -781,6 +781,9 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - PromisesObjC (2.1.1)
+  - SDWebImage (5.15.0):
+    - SDWebImage/Core (= 5.15.0)
+  - SDWebImage/Core (5.15.0)
 
 DEPENDENCIES:
   - Firebase
@@ -790,6 +793,7 @@ DEPENDENCIES:
   - FloatingPanel
   - GeoFire/Utils
   - gRPC-Core
+  - SDWebImage
 
 SPEC REPOS:
   trunk:
@@ -817,6 +821,7 @@ SPEC REPOS:
     - Libuv-gRPC
     - nanopb
     - PromisesObjC
+    - SDWebImage
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
@@ -843,7 +848,8 @@ SPEC CHECKSUMS:
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
+  SDWebImage: 9bec4c5cdd9579e1f57104735ee0c37df274d593
 
-PODFILE CHECKSUM: 0f3cbfe8706bc77cd5c08237ad61416253da9a49
+PODFILE CHECKSUM: 9f16bfcf8903877bd9a40a9577e98569f30acc82
 
 COCOAPODS: 1.11.3

@@ -35,14 +35,18 @@ class EntryPointViewController: UIViewController {
         do {
             let count = try context.count(for: request)
             if count == 0 {
-                let vc = self.storyboard?.instantiateViewController(identifier: "Nav2") as? UINavigationController
-                view.window?.rootViewController = vc
-                view.window?.makeKeyAndVisible()
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "Nav2") as! UINavigationController
+//                {
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true, completion: nil)
+//                }
             } else {
                 
-                let vc = self.storyboard?.instantiateViewController(identifier: "Nav3") as? UINavigationController
-                view.window?.rootViewController = vc
-                view.window?.makeKeyAndVisible()
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "Nav3") as! UINavigationController
+//                {
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true, completion: nil)
+//                }
             }
         } catch {
             print("Error fetching data from Core Data: \(error)")

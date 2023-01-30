@@ -13,4 +13,5 @@ target 'WhatsPoppin' do
   pod 'GeoFire/Utils'
   pod 'FloatingPanel'
   pod 'gRPC-Core'
+  pod 'SDWebImage'
 end

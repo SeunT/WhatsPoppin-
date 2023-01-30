@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import SDWebImage
 class PhotoCollectionViewCell: UICollectionViewCell
 {
     static let identifier = "PhotoCollectionViewCell"
@@ -39,9 +39,9 @@ class PhotoCollectionViewCell: UICollectionViewCell
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configure(with image: Data)
+    public func configure(with url: URL)
     {
-        photoImageView.image = UIImage(data: image)
+        photoImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "greyBox"))
         
         
     }

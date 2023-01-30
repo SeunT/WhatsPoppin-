@@ -24,14 +24,17 @@ class UserCache {
     
     
     private func loadEvents() {
+        
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_events")
-        do {
-            let eventsFromCoreData = try context.fetch(fetchRequest) as! [Core_events]
-            eventsFromCoreData.forEach { event in
-                events[event.uuid!] = event
+        context.perform {
+            do {
+                let eventsFromCoreData = try self.context.fetch(fetchRequest) as! [Core_events]
+                eventsFromCoreData.forEach { event in
+                    self.events[event.uuid!] = event
+                }
+            } catch {
+                print("Error loading events from Core Data: \(error)")
             }
-        } catch {
-            print("Error loading events from Core Data: \(error)")
         }
     }
      
@@ -54,6 +57,16 @@ class UserCache {
             }
             return nil
         }
+    }
+    
+    func clearUserCache()
+    {
+        user = nil
+    }
+    
+    func clearEventCache(){
+        events = [:]
+        loadEvents()
     }
     
 }

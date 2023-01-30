@@ -20,26 +20,6 @@ class SettingsViewController: UIViewController
         return tableView
     }()
     var User:User_info =  User_info()
-    
-//    let logOutButton: UIButton = {
-//        let button = UIButton()
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        button.setTitle("Log Out", for: .normal)
-//        button.setTitleColor(.blue, for: .normal)
-//        button.layer.cornerRadius = 5
-//        button.addTarget(self, action: #selector(logOutButtonTapped), for: .touchUpInside)
-//        return button
-//    }()
-//
-//    let deleteAccountButton: UIButton = {
-//        let button = UIButton()
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        button.setTitle("Delete Account", for: .normal)
-//        button.setTitleColor(.red, for: .normal)
-//        button.layer.cornerRadius = 5
-//        button.addTarget(self, action: #selector(deleteAccountButtonTapped), for: .touchUpInside)
-//        return button
-//    }()
 
     override func viewDidLoad()
     {
@@ -54,23 +34,6 @@ class SettingsViewController: UIViewController
     }
     private var data = [[SettingCellModel]]()
     
-
-    func configure_views()
-    {
-//        view.addSubview(logOutButton)
-//        view.addSubview(deleteAccountButton)
-//        NSLayoutConstraint.activate([
-//            logOutButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
-//            logOutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-//            logOutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-//            logOutButton.heightAnchor.constraint(equalToConstant: 50),
-//
-//            deleteAccountButton.bottomAnchor.constraint(equalTo: logOutButton.topAnchor, constant: -10),
-//            deleteAccountButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-//            deleteAccountButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-//            deleteAccountButton.heightAnchor.constraint(equalToConstant: 50)
-//        ])
-    }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
@@ -80,10 +43,10 @@ class SettingsViewController: UIViewController
         data.append([
             SettingCellModel(title: "Edit Profile"){[weak self] in
                 self?.editProfileTapped()},
-            SettingCellModel(title: "Invite Friends"){[weak self] in
-                self?.inviteFriends()},
-            SettingCellModel(title: "Save Original Posts"){[weak self] in
-            self?.logOutButtonTapped()},
+//            SettingCellModel(title: "Invite Friends"){[weak self] in
+//                self?.inviteFriends()},
+//            SettingCellModel(title: "Save Original Posts"){[weak self] in
+//            self?.logOutButtonTapped()},
         ])
         data.append([
             SettingCellModel(title: "Terms of Service"){[weak self] in
@@ -96,7 +59,9 @@ class SettingsViewController: UIViewController
         
         data.append([
             SettingCellModel(title: "Log Out"){[weak self] in
-            self?.logOutButtonTapped()}
+            self?.logOutButtonTapped()},
+            SettingCellModel(title: "Delete"){[weak self] in
+            self?.deleteAccountButtonTapped()}
         ])
     }
     enum SettingsURLType {
@@ -106,7 +71,7 @@ class SettingsViewController: UIViewController
     {
         let urlstring: String
         switch type {
-        case .terms: urlstring = ""
+        case .terms: urlstring = "https://www.medullalogic.com/whatspoppin-terms-of-service"
         case .privacy: urlstring = "https://www.medullalogic.com/whatspoppin-privacy"
         case .help: urlstring = "https://www.medullalogic.com/whatspoppin"
         }
@@ -141,15 +106,26 @@ class SettingsViewController: UIViewController
             self.User.logoutUser(completion: {success in
                 DispatchQueue.main.async {
                 if success {
-                    let loginVC = ViewController()
-                    loginVC.modalPresentationStyle = .fullScreen
-                    self.present(loginVC, animated: true)
-                    {
-                        self.navigationController?.popToRootViewController(animated: false)
-                        self.tabBarController?.selectedIndex = 0
-                    
-                    }
-                    
+//                    let loginVC = ViewController()
+//                    loginVC.modalPresentationStyle = .fullScreen
+//                    self.present(loginVC, animated: true)
+//                    {
+//                        self.navigationController?.popToRootViewController(animated: false)
+//                        self.tabBarController?.selectedIndex = 0
+//
+//                    }
+                
+//                   let vc = self.storyboard?.instantiateViewController(withIdentifier: "Nav2") as! UINavigationController
+//
+//                        self.present(vc, animated: true)
+//                        {
+                            self.tabBarController?.selectedIndex = 0
+//                            self.navigationController?.popToViewController(vc, animated: true)
+//                            vc.modalPresentationStyle = .fullScreen
+//                        }
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let nav2 = storyboard.instantiateViewController(withIdentifier: "Nav2") as! UINavigationController
+                    UIApplication.shared.keyWindow?.rootViewController = nav2
                 }else {
                     fatalError("Could not log out user")
                     
@@ -169,10 +145,43 @@ class SettingsViewController: UIViewController
 
     @objc func deleteAccountButtonTapped()
     {
-        User.deleteUser()
-        let vc = self.storyboard?.instantiateViewController(identifier: "Nav2") as? UINavigationController
-        view.window?.rootViewController = vc
-        view.window?.makeKeyAndVisible()
+        //add auth deletion
+        let actionSheet = UIAlertController(title: "Delete", message: "Are you sure you want to Delete your account?", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: {_ in
+            //change to        User.deleteUser()
+            
+            
+            self.User.deleteUser_E(completion: {success in
+                DispatchQueue.main.async {
+                if success {
+//                    let loginVC = ViewController()
+//                    loginVC.modalPresentationStyle = .fullScreen
+//                    self.present(loginVC, animated: true)
+//                    {
+//                        self.navigationController?.popToRootViewController(animated: false)
+//                        self.tabBarController?.selectedIndex = 0
+//
+//                    }
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let nav2 = storyboard.instantiateViewController(withIdentifier: "Nav2") as! UINavigationController
+                    UIApplication.shared.keyWindow?.rootViewController = nav2
+                    self.tabBarController?.selectedIndex = 0
+                    
+                }else {
+                    fatalError("Could not Delete user")
+                    
+                }
+                }
+            })
+        }))
+        actionSheet.popoverPresentationController?.sourceView = tableView
+        actionSheet.popoverPresentationController?.sourceRect = tableView.bounds
+        present(actionSheet, animated: true)
+ 
+     
     }
 
 }

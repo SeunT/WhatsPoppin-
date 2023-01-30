@@ -6,13 +6,25 @@
 //
 
 import UIKit
+import SDWebImage
 
+protocol EventViewControllerDelegate {
+    func createBarButtonItem(for eventViewController: EventViewController)
+}
 class EventViewController: UIViewController, UIScrollViewDelegate{
-    
-    var imgArr = [UIImage]()
+    var delegate: EventViewControllerDelegate?
+    var imgArr = [URL]()
     var final_event:Event!
     var eventID:String!
     var Eventt:Events = Events()
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .systemBlue
+        return tableView
+    }()
+    
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -63,17 +75,21 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         label.text = "testing"
         return label
     }()
+    let loadingImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
     
     // MARK: - View Life Cycle
    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        collectionView.dataSource = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-      
-        configureView()
-        
+
+        let group = DispatchGroup()
+        group.enter()
         Eventt.getEventData(eventID: eventID) {
             Evnt in
 //
@@ -92,20 +108,37 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
             let hour = calendar.component(.hour, from: date)
             self.timeLabel.text = "\(month) \(day) at \(hourAndAmPm)"
             self.final_event = Evnt
+            group.leave()
             self.Eventt.getEventImages(eventID: self.eventID, Evnt: Evnt) {
                 event in
+                
                     self.final_event = event
                     self.imgArr = event.eventimage!
                 DispatchQueue.main.async {
-                    self.activitySpinner.stopAnimating()
-                    self.activitySpinner.isHidden = true
+//                    self.activitySpinner.stopAnimating()
+//                    self.activitySpinner.isHidden = true
                     self.collectionView.reloadData()
                 }
             }
             
         }
+        group.notify(queue: .main) {
+            self.tableView.delegate = self
+            self.tableView.dataSource = self
+            //        tableView.rowHeight = UITableView.automaticDimension
+            //        tableView.estimatedRowHeight = 1000
+            self.tableView.register(EventProfileTableViewCell.self, forCellReuseIdentifier: EventProfileTableViewCell.identifier)
+        }
+        collectionView.dataSource = self
+       
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        
+        configureView()
+        delegate?.createBarButtonItem(for: self)
+        
         locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
     }
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -127,19 +160,52 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         }
     }
     
+    @objc func rightButtonTapped()
+    {
+        let DeleteAlert = UIAlertController(title: "Deleting...", message: nil, preferredStyle: .alert)
+    
+        let actionSheet = UIAlertController(title: "Delete", message: "Are you sure you want to Delete this event?", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
+        
+        actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [self]_ in
+            present(DeleteAlert, animated: true, completion: nil)
+            Eventt.deleteEvent(eventID: final_event.eventID!, userID: final_event.userid!){
+        
+                DeleteAlert.dismiss(animated: true)
+                
+                let controller = self.storyboard?.instantiateViewController(identifier: "Nav3") as? UINavigationController
+                self.view.window?.rootViewController = controller
+            }
+            
+        }))
+        actionSheet.popoverPresentationController?.sourceView = view
+        actionSheet.popoverPresentationController?.sourceRect = view.bounds
+        present(actionSheet, animated: true)
+    }
+    
 
 
     
 }
-
-
 extension EventViewController{
     
     func configureView() {
+        
         configureScrollView()
         configureCollectionView()
+//        configureTableView()
     }
-    
+//    func configureTableView()
+//    {
+//        NSLayoutConstraint.activate([
+//            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+//            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+//            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+//            tableView.heightAnchor.constraint(equalToConstant: 50)
+//        ])
+//
+//    }
     func configureScrollView() {
         view.addSubview(scrollView)
         NSLayoutConstraint.activate([
@@ -148,6 +214,9 @@ extension EventViewController{
             scrollView.rightAnchor.constraint(equalTo: view.rightAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        
+        
+       
     }
     func configureCollectionView() {
         
@@ -166,11 +235,18 @@ extension EventViewController{
             collectionView.widthAnchor.constraint(equalToConstant: view.frame.size.width)
                ])
         // Add constraints for activity spinner
-        collectionView.addSubview(activitySpinner)
-        activitySpinner.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor).isActive = true
-        activitySpinner.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor).isActive = true
+//        collectionView.addSubview(activitySpinner)
+//        activitySpinner.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor).isActive = true
+//        activitySpinner.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor).isActive = true
+//        activitySpinner.startAnimating()
+//
+//
+        loadingImage.addSubview(activitySpinner)
+
+        // Set constraints for the activity spinner
+        activitySpinner.centerXAnchor.constraint(equalTo: loadingImage.centerXAnchor).isActive = true
+        activitySpinner.centerYAnchor.constraint(equalTo: loadingImage.centerYAnchor).isActive = true
         activitySpinner.startAnimating()
-        
         
         scrollView.addSubview(timeLabel)
         
@@ -190,7 +266,7 @@ extension EventViewController{
         ]
         let firstAttributedString = NSMutableAttributedString(string: firstString, attributes: firstAttributes)
 
-        let secondString = "dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\n\nIt has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. \n\nLorem Ipsum comes from sections 1.10.32 and 1.10.33 of 'de Finibus Bonorum et Malorum' (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, 'Lorem ipsum dolor sit amet..', comes from a line in section 1.10.32. The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from 'de Finibus Bonorum et Malorum' by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham. Where can I get some? There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."
+        let secondString = "dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\n\nIt has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old."
 
         let secondAttributes: [NSAttributedString.Key: Any] = [
             .font : UIFont.systemFont(ofSize: 20, weight: .regular),
@@ -209,18 +285,56 @@ extension EventViewController{
         
         descriptionLabel.attributedText = attributedString
     
+        let bottomView = UIView()
+            
+        bottomView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(bottomView)
         
         scrollView.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
             descriptionLabel.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             descriptionLabel.widthAnchor.constraint(equalToConstant: view.frame.size.width - 40),
             descriptionLabel.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 20.0),
-            descriptionLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 20.0)
+            descriptionLabel.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -50.0)
                ])
         
-           
-       }
+//        scrollView.addSubview(tableView)
+//        NSLayoutConstraint.activate([
+//                    tableView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+//                    tableView.widthAnchor.constraint(equalToConstant: view.frame.size.width - 40),
+//                    tableView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.0),
+//                    tableView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20.0)
+//                       ])
+//        tableView.frame = CGRect(x: 0, y: descriptionLabel.frame.maxY, width: scrollView.frame.width, height: scrollView.frame.height - descriptionLabel.frame.maxY)
        
+
+        NSLayoutConstraint.activate([
+           bottomView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+           bottomView.widthAnchor.constraint(equalToConstant: view.frame.size.width - 40),
+            bottomView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.0),
+          bottomView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+           bottomView.heightAnchor.constraint(equalToConstant: 60)
+        ])
+
+        bottomView.backgroundColor = .red
+
+        
+
+
+        bottomView.addSubview(tableView)
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: bottomView.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor),
+            tableView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
+            tableView.widthAnchor.constraint(equalTo: bottomView.widthAnchor)
+        ])
+//        tableView.rowHeight = 25
+        tableView.frame = bottomView.bounds
+//        tableView.rowHeight = tableView.frame.height
+       }
+ 
 }
 extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int)-> Int {
@@ -252,7 +366,14 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
              cell.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor)
          ])
         if let vc = cell.viewWithTag(111) as? UIImageView{
-            vc.image = imgArr[indexPath.row]
+//            vc.image = imgArr[indexPath.row]
+//            vc.sd_setImage(with: imgArr[indexPath.row], placeholderImage: nil, options: .highPriority) { (image, error, cacheType, url) in
+//                self.activitySpinner.stopAnimating()
+//            }
+            print(imgArr[indexPath.item])
+            print(imgArr[indexPath.row])
+            vc.sd_setImage(with: imgArr[indexPath.row], placeholderImage: nil, options: SDWebImageOptions.progressiveLoad)
+          //  vc.sd_setImage(with: imgArr[indexPath.row], placeholderImage: UIImage(named: "greyBox"))
         }
         return cell
     }
@@ -271,6 +392,43 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0.0
+    }
+}
+
+extension EventViewController: UITableViewDelegate, UITableViewDataSource{
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: EventProfileTableViewCell.identifier, for: indexPath) as! EventProfileTableViewCell
+
+        cell.configure(nm: final_event.username!, pho: final_event.userimg!)
+        
+        
+        return cell
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        //check if current user matches this user
+        let currUserID = (UserCache.shared.getUser()?.uuid)!
+        let otherUserID = final_event.userid!
+        if(otherUserID == currUserID)
+        {
+            let vc = NewProfileViewController(currentUser: true, currId: currUserID)
+            navigationController?.pushViewController(vc, animated: true)
+        }
+        else
+        {
+            let vc = NewProfileViewController(currentUser: false, currId: otherUserID)
+            navigationController?.pushViewController(vc, animated: true)
+            
+        }        
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100.0
     }
 }
 

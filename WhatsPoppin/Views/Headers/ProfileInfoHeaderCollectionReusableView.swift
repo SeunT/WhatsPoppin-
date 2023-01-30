@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SDWebImage
+import CoreData
 
 protocol ProfileInfoHeaderCollectionReusableViewDelegate: AnyObject
 {
@@ -28,9 +30,9 @@ class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         button.setTitle("Edit Profile", for: .normal)
         button.setTitleColor(customColor, for: .normal)
         button.layer.cornerRadius = 5
-        button.layer.borderWidth = 1
-        button.layer.borderColor = customColor.cgColor
+        button.layer.borderWidth = 0
         button.backgroundColor = .secondarySystemBackground
+        button.layer.borderColor = button.backgroundColor?.cgColor
         return button
     }()
     private let name_label: UILabel = {
@@ -47,7 +49,7 @@ class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
         label.font = UIFont(name: "HelveticaNeue", size: 15)
-        label.text = "Niche free yourself"
+        label.text = "                   "
         label.textColor = .label
         label.numberOfLines = 0 //line wrap
         return label
@@ -59,14 +61,62 @@ class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         addButtonActions()
         backgroundColor = .systemBackground
         clipsToBounds = true
-        addUserData()
     }
-    private func addUserData()
+    public func addUserData()
     {
-        let user = User.getUserData()
-        name_label.text = user?.name!
-        profileImageView.image = UIImage(data: (user?.pfp)!)
+//        let user = User.getUserData()
+//        name_label.text = user?.name!
+//        bio.text = user?.bio ?? ""
+        
+//        print(user?.bio!)
+        
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let context = appDelegate.persistentContainer.viewContext
+            
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_user")
+            
+            context.perform {
+                
+                do {
+                    let users = try context.fetch(fetchRequest) as! [Core_user]
+                    
+                    DispatchQueue.main.async {
+                        
+                        
+                        self.name_label.text = users.first?.name!
+                        self.bio.text = users.first?.bio ?? ""
+                        if let urlpfp = URL(string: (users.first?.pfp!)!) {
+                            // Use the urlpfp variable
+                            print(urlpfp)
+                            self.profileImageView.sd_setImage(with: urlpfp, placeholderImage: UIImage(named: "greyBox"))
+                        } else {
+                            print("Error creating URL")
+                        }
+                        
+                    }
+                }
+                catch
+                {
+                    print("Error grabbing user info from core data in profile info header \(error)")
+                    
+                    
+                }
+                
+            }
+
     
+    }
+    public func addOtherUserDara(id UserID:String, completion:@escaping(Bool)->())
+    {
+        User.getOtherUser(uid: UserID) {
+            res in
+            let url = URL(string: res.pfp!)
+            self.name_label.text = res.username!
+            self.bio.text = res.bio!
+            self.profileImageView.sd_setImage(with: url, placeholderImage: UIImage(named: "greyBox"))
+            completion(true)
+
+        }
     }
     private func addSubviews() {
         addSubview(profileImageView)
@@ -88,7 +138,7 @@ class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         let profilePhotoSize = frame.width/4
         profileImageView.frame = CGRect(x: 5, y: 5, width: profilePhotoSize, height: profilePhotoSize).integral
         profileImageView.layer.cornerRadius = profilePhotoSize/2.0
-        let buttonHeight = profilePhotoSize/2
+        let buttonHeight = profilePhotoSize/2.5
         let buttonWidth = (frame.width-10-profilePhotoSize)/3
 //        let yObject = profilePhoto.frame.origin.y + profilePhoto.frame.size.height
 //        let xObject = profilePhoto.frame.origin.x + profilePhoto.frame.size.width
@@ -122,10 +172,18 @@ class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         
     }
     
+    public func disableEdit()
+    {
+        editProfileButton.isHidden = true
+        editProfileButton.isUserInteractionEnabled = false
+        editProfileButton.isEnabled = false
+    }
+    
     //MARK - Actions
     @objc private func didTapEditButton()
     {
         delegate?.profileHeaderDidTapEditButton(self)
     }
+    
     
 }

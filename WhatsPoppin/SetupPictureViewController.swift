@@ -59,6 +59,7 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        view.backgroundColor = .systemBackground
         configure_const()
         
      
@@ -247,11 +248,12 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
             self.present(alert, animated: true)
         }else
         {
-                self.User.setup(user: useruuid, image: user_url, nm: self.name, pfp: imagdat)
+                self.User.setup(user: useruuid, image: user_url, nm: self.name)
                 
-                let controller = self.storyboard?.instantiateViewController(identifier: "Nav3") as? UINavigationController
-                self.view.window?.rootViewController = controller
-                self.view.window?.makeKeyAndVisible()
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let nav3 = storyboard.instantiateViewController(withIdentifier: "Nav3") as! UINavigationController
+                UIApplication.shared.keyWindow?.rootViewController = nav3
+//                self.view.window?.makeKeyAndVisible()
         }
     }
     
