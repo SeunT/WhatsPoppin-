@@ -185,7 +185,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             // there wasn't a pin, so we make a new one
 
 
-            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "custom")
+                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "custom")
+           
             // this is where your title is allowed to be shown when tapping the pin
             annotationView?.canShowCallout = false
 
@@ -197,12 +198,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             // we have an old annotation, so update it
             annotationView?.annotation = annotation
         }
+        
         if (annotation.title! == "user")
         {
-        //    annotationView?.image = UIImage(named: "userimg")
+            annotationView?.image = nil
       
         }
-        else
+        else if(annotation.title! != "user")
         {
             annotationView?.image = UIImage(named: "house")
             
