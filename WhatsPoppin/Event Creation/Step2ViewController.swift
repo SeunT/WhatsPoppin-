@@ -42,7 +42,7 @@ class Step2ViewController: UIViewController, Step4ViewControllerDelegate {
     private let question: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "How would you describe your event?"
+        label.text = "What time does it start?"
         label.textColor = .label
         label.textAlignment = .left
         label.font = UIFont(name: "HelveticaNeue", size: 18)

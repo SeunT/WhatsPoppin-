@@ -132,7 +132,8 @@ class User_info
     
     func deleteUser_E(completion: @escaping(Bool) -> Void)
     {
-        
+        var normalDelete:Bool = false
+        let almighty = DispatchGroup()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         var document_count = 0
         let context = appDelegate.persistentContainer.viewContext
@@ -140,17 +141,40 @@ class User_info
         do {
             let users = try context.fetch(fetchRequest) as! [Core_user]
             let UserID = (users.first?.uuid!)!
+            
+            almighty.enter()
             db.collection("users").document(UserID).collection("events").getDocuments
             { docu,err in
                 if let err = err {
                     print("error deleting in deleteUser_E\(err)")
                     // handle the error
                 } else {
+                    
+                    let profileImageRef = Storage.storage().reference().child("/profiles/\((users.first?.uuid!)!)/")
+                    profileImageRef.listAll { (result, error) in
+                        if let error = error {
+                            print(error)
+                        } else {
+                            
+                            for item in result!.items {
+                                item.delete { (error) in
+                                    if let error = error {
+                                        print(error)
+                                    }
+                                }
+                            }
+                        }
+                    }
                     if docu!.isEmpty {
+                   
                         print("No documents found go ahead with normal delete")
                         self.deleteUser(){
                             res in
-                            completion(res)
+                            normalDelete = true
+                            almighty.leave()
+//                            completion(res)
+                        
+                            
                         }
                     } else {
                         
@@ -160,7 +184,7 @@ class User_info
                             let eventref = self.db.collection("events").document(eventID)
                             
                             let EventImageRef = Storage.storage().reference().child("/Events/\(eventID)/")
-                            let profileImageRef = Storage.storage().reference().child("/profiles/\((users.first?.uuid!)!)/")
+                            
                             let context = appDelegate.persistentContainer.viewContext
                             let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_events")
                             var count = 0
@@ -190,6 +214,7 @@ class User_info
                                                 
                                                 context.perform {
                                                     do {
+                                                        
                                                         let result = try context.fetch(request)
                                                         for object in result {
                                                             context.delete(object as! NSManagedObject)
@@ -197,6 +222,10 @@ class User_info
                                                         }
                                                         try context.save()
                                                         UserCache.shared.clearEventCache()
+                                                        if(document_count == docu?.count)
+                                                        {
+                                                            almighty.leave()
+                                                        }
                                                         print("succesfully deleted")
                                                         //                                                completion()
                                                         
@@ -213,33 +242,10 @@ class User_info
                                 }
                             }
                           
-                            
-                            profileImageRef.listAll { (result, error) in
-                                if let error = error {
-                                    print(error)
-                                } else {
-                                    
-                                    for item in result!.items {
-                                        item.delete { (error) in
-                                            if let error = error {
-                                                print(error)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            
+                          
+           
                         }
-                        
-                        self.deleteUser()
-                        {
-                            _ in
-                            if(document_count == docu?.count)
-                            {
-                                completion(true)
-                                print("Sucess deleting in deleteUserE")
-                            }
-                        }
+                       
                     }
                 }
             }
@@ -248,6 +254,24 @@ class User_info
         {
             print("Error getting UserID in deleteUser_E \(error)")
             
+        }
+        almighty.notify(queue: .main)
+        {
+            if(!normalDelete)
+            {
+                self.deleteUser()
+                {
+                    _ in
+                    print("Sucess deleting in deleteUserE")
+                    completion(true)
+     
+                }
+            }
+            else
+            {
+                print("did not use deleteUserE")
+                completion(true)
+            }
         }
         
         
@@ -311,22 +335,6 @@ class User_info
             } else {
                 // Account deleted.
                 //delete the user data from firestore and storage
-                
-                let profileImageRef = Storage.storage().reference().child("/profiles/\(UserID!)/")
-                profileImageRef.listAll { (result, error) in
-                    if let error = error {
-                        print(error)
-                    } else {
-                        
-                        for item in result!.items {
-                            item.delete { (error) in
-                                if let error = error {
-                                    print(error)
-                                }
-                            }
-                        }
-                    }
-                }
                 print("success deleting user in regular DeleteUser")
                 completion(true)
                 return
@@ -400,57 +408,93 @@ class User_info
         return UserCache.shared.getUser()
     }
     
-    func setup(user:String, image:String, nm:String)
+    func setup(user:String, nm:String, dat:Data, completion:@escaping()->())
     {
       
-        db.collection("users").document(user).setData(["image":image, "name":nm, "bio": " "])
+       
+        addPP(user: user, dat: dat){
+            image in
+            
+            self.db.collection("users").document(user).setData(["image":image, "name":nm, "bio": " "])
 
-        //need to grab existing user 
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_user")
-        do {
-            let users = try context.fetch(fetchRequest) as! [Core_user]
-            users.first!.setValue(user, forKey: "uuid")
-            users.first!.setValue(nm, forKey: "name")
-            users.first!.setValue(image, forKey: "pfp")
-            users.first!.setValue(" ", forKey: "bio")
-            try context.save()
-        } catch {
-            print("Failed saving")
+            //need to grab existing user
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let context = appDelegate.persistentContainer.viewContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_user")
+            do {
+                let users = try context.fetch(fetchRequest) as! [Core_user]
+                users.first!.setValue(user, forKey: "uuid")
+                users.first!.setValue(nm, forKey: "name")
+                users.first!.setValue(image, forKey: "pfp")
+                users.first!.setValue(" ", forKey: "bio")
+                try context.save()
+            } catch {
+                print("Failed saving")
+            }
+            completion()
         }
         
     }
-    func addPP(user:String, image:String)
+    func addPP(user:String, dat:Data?, completion:@escaping(String)->())
     {
+        let group = DispatchGroup()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
       
+        let imageName = NSUUID().uuidString
+        var image:String!
+        let storageRef = Storage.storage().reference().child("profiles/\(user)/\(imageName).png") //Load the Firebase storage
 
-        //add it to core data
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_user")
-        do {
-            let users = try context.fetch(fetchRequest) as! [Core_user]
-            users.first?.setValue(image, forKey: "pfp")
-            db.collection("users").document(user).updateData(["image":image])
-            
-            let url = URL(string:image)
-            let manager = SDWebImageManager.shared
-            manager.loadImage(with: url, options: .highPriority, progress: nil) { _,_,_,_,_,_  in}
-        }
-        catch
+        if let uploadData = dat
         {
-            print("Error deleting from firebase \(error)")
-            
+            group.enter()
+            storageRef.putData(uploadData, metadata: nil, completion: { (metadata, err) in
+                if let error = err {
+                    print(error)
+                    return
+                }
+                storageRef.downloadURL(completion: { (url, err) in
+                    if let err = err {
+                        print(err)
+                        return
+                    }
+                    image = url?.absoluteString
+                    group.leave()
+                })
+            })
         }
         
-        // Save the changes
+        group.notify(queue: .main)
+        {
+            //add it to core data
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_user")
+            do {
+                let users = try context.fetch(fetchRequest) as! [Core_user]
+                users.first?.setValue(image, forKey: "pfp")
+                self.db.collection("users").document(user).updateData(["image":image])
+                
+                let url = URL(string:image)
+                let manager = SDWebImageManager.shared
+                manager.loadImage(with: url, options: .highPriority, progress: nil) { _,_,_,_,_,_  in}
+            }
+            catch
+            {
+                print("Error deleting from firebase \(error)")
+                
+            }
+            
+            // Save the changes
 
-        do {
-            try context.save()
-        } catch {
-            print("Error saving \(error)")
+            do {
+                try context.save()
+            } catch {
+                print("Error saving \(error)")
+            }
+   
+            completion(image)
         }
+
+  
         
         
     }

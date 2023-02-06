@@ -77,6 +77,7 @@ class NewProfileViewController: UIViewController {
             
         }
     
+    
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

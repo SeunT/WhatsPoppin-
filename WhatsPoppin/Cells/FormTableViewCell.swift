@@ -43,6 +43,7 @@ class FormTableViewCell: UITableViewCell, UITextFieldDelegate{
         
     }
     
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -55,6 +56,20 @@ class FormTableViewCell: UITableViewCell, UITextFieldDelegate{
         field.placeholder = model.placeholder
         field.text = model.value
     }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let model = model else {
+            return true
+        }
+        
+        if model.label == "name" {
+            let currentText = textField.text ?? ""
+            let prospectiveText = (currentText as NSString).replacingCharacters(in: range, with: string)
+            return prospectiveText.count <= 12
+        }
+        return true
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         formLabel.text = nil

@@ -15,12 +15,23 @@ class VerifyViewController: UIViewController {
     var Number:String!
     var verifyID:String!
     var test:Bool?
-    private let continue_n :UIButton = {
-        let button = UIButton()
+    private let code_label:UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "My code is"
+        label.textAlignment = .left
+        label.textColor = .label
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 30)
+        
+        label.sizeToFit()
+        return label
+    }()
+    private let continue_n :LoadingButton = {
+        let button = LoadingButton()
         let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Continue", for: .normal)
-        button.layer.cornerRadius = 5
+        button.layer.cornerRadius = 20
         button.layer.borderWidth = 1
         button.layer.borderColor = customColor.cgColor
         button.backgroundColor = customColor
@@ -37,18 +48,7 @@ class VerifyViewController: UIViewController {
         textfield.keyboardType = .numberPad
         return textfield
     }()
-    @IBOutlet weak var continue_next: UIButton!
-    let activitySpinner: UIActivityIndicatorView = {
-            let activitySpinner = UIActivityIndicatorView(style: .medium)
-            activitySpinner.translatesAutoresizingMaskIntoConstraints = false
-            activitySpinner.hidesWhenStopped = true
-            let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
-            activitySpinner.color = customColor
-            return activitySpinner
-        }()
-    let loggingInAlert = UIAlertController(title: "Loading...", message: nil, preferredStyle: .alert)
 
-    @IBOutlet weak var otpOu: UITextField!
 
     override func viewDidLoad() {
         
@@ -56,12 +56,9 @@ class VerifyViewController: UIViewController {
         view.backgroundColor = .systemBackground
         view.addSubview(verify_n)
         view.addSubview(continue_n)
+        view.addSubview(code_label)
         
-        loggingInAlert.view.addSubview(activitySpinner)
-        NSLayoutConstraint.activate([
-            activitySpinner.centerXAnchor.constraint(equalTo: loggingInAlert.view.centerXAnchor),
-            activitySpinner.centerYAnchor.constraint(equalTo: loggingInAlert.view.centerYAnchor)
-        ])
+       
         NSLayoutConstraint.activate([
             verify_n.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             verify_n.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height * 0.3),
@@ -70,10 +67,13 @@ class VerifyViewController: UIViewController {
         NSLayoutConstraint.activate([
             continue_n.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             continue_n.topAnchor.constraint(equalTo: verify_n.bottomAnchor, constant: 20),
-            continue_n.widthAnchor.constraint(equalToConstant: 200),
+            continue_n.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.6),
             continue_n.heightAnchor.constraint(equalToConstant: 50)
         ])
-
+        NSLayoutConstraint.activate([
+            code_label.leftAnchor.constraint(equalTo: verify_n.leftAnchor),
+            code_label.bottomAnchor.constraint(equalTo: verify_n.topAnchor,constant: -40)
+        ])
         continue_n.addTarget(self, action: #selector(continue_b), for: .touchUpInside)
 
         
@@ -83,16 +83,12 @@ class VerifyViewController: UIViewController {
     @objc private func continue_b()
     {
 
+        continue_n.showLoading()
          let _ = verifyID
          let credentials = PhoneAuthProvider.provider().credential(withVerificationID: verifyID, verificationCode: verify_n.text!)
-         
-          continue_n.isEnabled = false
-          continue_n.isUserInteractionEnabled = false
-          continue_n.alpha = 0.5
+        
           
-          
-          present(self.loggingInAlert, animated: true, completion: nil)
-          activitySpinner.startAnimating()
+        
         User.getOrCreateUser(cred: credentials)
          { return_num in
              if return_num == 1
@@ -102,6 +98,7 @@ class VerifyViewController: UIViewController {
 //                 if let homeViewController = self.storyboard?.instantiateViewController(withIdentifier: "Nav1") as? UINavigationController {
 //                     self.present(homeViewController, animated: true, completion: nil)
 //                 }
+                 self.continue_n.hideLoading()
                  let storyboard = UIStoryboard(name: "Main", bundle: nil)
                  let nav1 = storyboard.instantiateViewController(withIdentifier: "Nav1") as! UINavigationController
                  UIApplication.shared.keyWindow?.rootViewController = nav1
@@ -115,14 +112,11 @@ class VerifyViewController: UIViewController {
     
                  self.Event.loadUserEvents(){
                      res in
-                     
+                     self.continue_n.hideLoading()
                     if res
                      {
                         DispatchQueue.main.async
                         {
-                            self.activitySpinner.stopAnimating()
-                            self.activitySpinner.removeFromSuperview()
-                            self.loggingInAlert.dismiss(animated: true, completion: nil)
 //
 //                            let controller = self.storyboard?.instantiateViewController(withIdentifier: "Nav3") as! UINavigationController
 //                            //{
@@ -139,7 +133,7 @@ class VerifyViewController: UIViewController {
                      else {
                          print("error logging in")
                      }
-                   
+           
                  }
               
                  
@@ -147,8 +141,13 @@ class VerifyViewController: UIViewController {
              else
              {
 
+              
+//
                  let alert = UIAlertController(title: "Error", message: "Invalid code. Please try again", preferredStyle: .alert)
-                 alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                 alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: {
+                     _ in
+                     self.continue_n.hideLoading()
+                 }))
                  self.present(alert, animated: true)
                  
              }

@@ -37,6 +37,7 @@
 		2CC818A32966354000AC6487 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC818A22966354000AC6487 /* EventViewController.swift */; };
 		2CCB0797295FBAD000E452A8 /* EntryPointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCB0796295FBAD000E452A8 /* EntryPointViewController.swift */; };
 		2CD82AFA2985CC210054B627 /* OtherUserCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD82AF92985CC210054B627 /* OtherUserCache.swift */; };
+		2CD82B00299058710054B627 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD82AFF299058710054B627 /* LoadingButton.swift */; };
 		2CD93F662656127D00D63569 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F652656127D00D63569 /* AppDelegate.swift */; };
 		2CD93F682656127D00D63569 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F672656127D00D63569 /* SceneDelegate.swift */; };
 		2CD93F6A2656127D00D63569 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD93F692656127D00D63569 /* ViewController.swift */; };
@@ -79,6 +80,9 @@
 		2CC818A22966354000AC6487 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		2CCB0796295FBAD000E452A8 /* EntryPointViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryPointViewController.swift; sourceTree = "<group>"; };
 		2CD82AF92985CC210054B627 /* OtherUserCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherUserCache.swift; sourceTree = "<group>"; };
+		2CD82AFB298C8CCA0054B627 /* WhatsPoppinRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhatsPoppinRelease.entitlements; sourceTree = "<group>"; };
+		2CD82AFE298C945C0054B627 /* WhatsPoppin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WhatsPoppin.entitlements; sourceTree = "<group>"; };
+		2CD82AFF299058710054B627 /* LoadingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
 		2CD93F622656127D00D63569 /* WhatsPoppin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatsPoppin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD93F652656127D00D63569 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2CD93F672656127D00D63569 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -166,6 +170,26 @@
 			path = Cache;
 			sourceTree = "<group>";
 		};
+		2CD82B012990762F0054B627 /* SetupUserFlow */ = {
+			isa = PBXGroup;
+			children = (
+				2C02B07426AB636400BF28A3 /* NameViewController.swift */,
+				2C02B06F26AB52D600BF28A3 /* SetupPictureViewController.swift */,
+			);
+			path = SetupUserFlow;
+			sourceTree = "<group>";
+		};
+		2CD82B02299076CA0054B627 /* LoginFlow */ = {
+			isa = PBXGroup;
+			children = (
+				2CCB0796295FBAD000E452A8 /* EntryPointViewController.swift */,
+				2CD93F692656127D00D63569 /* ViewController.swift */,
+				2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */,
+				2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */,
+			);
+			path = LoginFlow;
+			sourceTree = "<group>";
+		};
 		2CD93F592656127D00D63569 = {
 			isa = PBXGroup;
 			children = (
@@ -189,31 +213,30 @@
 		2CD93F642656127D00D63569 /* WhatsPoppin */ = {
 			isa = PBXGroup;
 			children = (
+				2CD82B02299076CA0054B627 /* LoginFlow */,
+				2CD82B012990762F0054B627 /* SetupUserFlow */,
+				2CD82AFE298C945C0054B627 /* WhatsPoppin.entitlements */,
+				2CD82AFB298C8CCA0054B627 /* WhatsPoppinRelease.entitlements */,
 				2C7745BA297DD43A00FAF5FE /* Cells */,
 				2C7745B8297DD0C100FAF5FE /* Views */,
 				2C65FF1928D64F5700229A1C /* Event Creation */,
 				2CD93F792656129000D63569 /* GoogleService-Info.plist */,
 				2CD93F652656127D00D63569 /* AppDelegate.swift */,
 				2CD93F672656127D00D63569 /* SceneDelegate.swift */,
-				2CD93F692656127D00D63569 /* ViewController.swift */,
 				2CD93F6B2656127D00D63569 /* Main.storyboard */,
 				2C3C354F289C2170009F9368 /* MapViewController.swift */,
-				2C1301C32661BD9F002EAF0F /* VerifyViewController.swift */,
-				2C1301C12661BBA1002EAF0F /* NumberPassthrough.swift */,
 				2CD93F6E2656127E00D63569 /* Assets.xcassets */,
 				2CD93F702656127E00D63569 /* LaunchScreen.storyboard */,
 				2CD93F732656127E00D63569 /* Info.plist */,
-				2C02B07426AB636400BF28A3 /* NameViewController.swift */,
-				2C02B06F26AB52D600BF28A3 /* SetupPictureViewController.swift */,
 				2C0D176626BF1897007B9400 /* EventTableViewCell.swift */,
 				2C0D176A26BF669C007B9400 /* ProfileViewController.swift */,
 				2C4157212949527D00CDEDDE /* MapEventViewController.swift */,
-				2CCB0796295FBAD000E452A8 /* EntryPointViewController.swift */,
 				2CC818A22966354000AC6487 /* EventViewController.swift */,
 				2CF75D572977563300CEABA1 /* EditProfileViewController.swift */,
 				2C336D2F29787641008C4105 /* SettingsViewController.swift */,
 				2C336D3729789B92008C4105 /* coreModel.xcdatamodeld */,
 				2C7745B6297DCA9100FAF5FE /* NewProfileViewController.swift */,
+				2CD82AFF299058710054B627 /* LoadingButton.swift */,
 			);
 			path = WhatsPoppin;
 			sourceTree = "<group>";
@@ -372,6 +395,7 @@
 				2C0D176B26BF669C007B9400 /* ProfileViewController.swift in Sources */,
 				2C65FF2328D787B000229A1C /* LocationManager.swift in Sources */,
 				2C1301C42661BD9F002EAF0F /* VerifyViewController.swift in Sources */,
+				2CD82B00299058710054B627 /* LoadingButton.swift in Sources */,
 				2C7745BD297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift in Sources */,
 				2CCB0797295FBAD000E452A8 /* EntryPointViewController.swift in Sources */,
 				2C7745BF297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift in Sources */,
@@ -531,6 +555,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WhatsPoppin/WhatsPoppin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9Y494N8DR2;
@@ -558,6 +583,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WhatsPoppin/WhatsPoppinRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9Y494N8DR2;

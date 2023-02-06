@@ -50,6 +50,12 @@
             ReferencedContainer = "container:WhatsPoppin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-FIRDebugEnabled"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <LocationScenarioReference
          identifier = "../../../../Downloads/gpxgenerator_path.gpx"
          referenceType = "0">

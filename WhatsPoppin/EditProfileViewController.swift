@@ -38,7 +38,9 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
     var name_error:Bool!
     private var models =  [[EditProfileFormModel]]()
     private var updatemodel = [EditProfileFormModel]()
-    override func viewDidLoad() {
+    
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         configureModels()
         tableView.tableHeaderView = createTableHeaderView()
@@ -190,6 +192,7 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
     @objc private func didTapSave()
     {//save info to database and core data
      
+        let global = DispatchGroup()
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
@@ -200,61 +203,7 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
             
     
             let useruuid = (users.first?.uuid!)!
-            if(profileImagDat != nil)
-            {
-                
-                
-                let imageName = NSUUID().uuidString
-                
-                
-                
-                let storageRef = Storage.storage().reference().child("profiles/\(useruuid)/\(imageName).png")
-                let folderToDelete = Storage.storage().reference().child("profiles/\(useruuid)")
-                
-                
-                folderToDelete.listAll { (result, error) in
-                    if let error = error {
-                        // Handle the error
-                        print("error getting list of images \(error)")
-                    } else {
-                        
-                        
-                        
-                        for item in result!.items {
-                            item.delete { error in
-                                if let error = error {
-                                    // Handle the error
-                                    print("error deleting from db \(error)")
-                                } else {
-                                    // File deleted successfully
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                if let uploadData = profileImagDat
-                {
-                    
-                    storageRef.putData(uploadData, metadata: nil, completion: { (metadata, err) in
-                        if let error = err {
-                            print(error)
-                            return
-                        }
-                        storageRef.downloadURL(completion: { [self] (url, err) in
-                            if let err = err {
-                                print(err)
-                                return
-                            }
-                            
-                            
-                            self.User.addPP(user: useruuid, image: url!.absoluteString)
-                            
-                            
-                        })
-                    })
-                }
-            }
+
             for section in 0..<tableView.numberOfSections {
                     for row in 0..<tableView.numberOfRows(inSection: section) {
                         if let cell = tableView.cellForRow(at: IndexPath(row: row, section: section)) as? FormTableViewCell {
@@ -277,6 +226,85 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
                 print(updatemodel)
                 User.updateUser(uid: useruuid, model: updatemodel)
             }
+            
+            if(profileImagDat != nil)
+            {
+                global.enter()
+                
+                
+                let imageName = NSUUID().uuidString
+                
+                
+                
+                let storageRef = Storage.storage().reference().child("profiles/\(useruuid)/\(imageName).png")
+                let folderToDelete = Storage.storage().reference().child("profiles/\(useruuid)")
+                
+                let group = DispatchGroup()
+                var count = 0
+                group.enter()
+                folderToDelete.listAll { (result, error) in
+                    if let error = error {
+                        // Handle the error
+                        print("error getting list of images \(error)")
+                    } else {
+                        
+                        
+                        
+                        for item in result!.items {
+                            item.delete { error in
+                                if let error = error {
+                                    // Handle the error
+                                    print("error deleting from db \(error)")
+                                } else
+                                {
+                                    count+=1
+                                    // File deleted successfully
+                                    if(count == result!.items.count)
+                                    {
+                                        group.leave()
+                                    }
+                                }
+                            }
+                            
+                        }
+                        if(result!.items.count == 0)
+                        {
+                            group.leave()
+                        }
+                        
+                       
+                    }
+                }
+//
+//                if let uploadData = profileImagDat
+//                {
+                    
+//                    storageRef.putData(uploadData, metadata: nil, completion: { (metadata, err) in
+//                        if let error = err {
+//                            print(error)
+//                            return
+//                        }
+//                        storageRef.downloadURL(completion: { [self] (url, err) in
+//                            if let err = err {
+//                                print(err)
+//                                return
+//                            }
+                            
+                       
+                group.notify(queue: .main)
+                {
+                    self.User.addPP(user: useruuid, dat:self.profileImagDat)
+                    {
+                        _ in
+                        global.leave()
+                    }
+                }
+                            
+//
+//                        })
+//                    })
+//                }
+            }
         }
         catch
         {
@@ -284,8 +312,12 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
             
             
         }
-        dismiss(animated: true, completion: nil)
-        delegate?.reloadData()
+        
+        global.notify(queue: .main)
+        {
+            self.dismiss(animated: true, completion: nil)
+            self.delegate?.reloadData()
+        }
 
         
     }
@@ -371,6 +403,8 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
 
 }
 extension EditProfileViewController: FormTableViewCellDelegate {
+    
+    
     func formTableViewCell(_ cell: FormTableViewCell, didUpdateField updatedModel: EditProfileFormModel) {
         
         if(updatedModel.label == "name" && (updatedModel.value?.trimmingCharacters(in: .whitespaces) == ""))

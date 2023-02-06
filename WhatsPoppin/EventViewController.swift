@@ -21,7 +21,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .systemBlue
+        tableView.isScrollEnabled = false
         return tableView
     }()
     
@@ -82,7 +82,9 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         imageView.clipsToBounds = true
         return imageView
     }()
-    
+//    override func viewDidAppear(_ animated: Bool) {
+//        tableView.reloadData()
+//    }
     // MARK: - View Life Cycle
    
     override func viewDidLoad() {
@@ -108,6 +110,23 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
             let hour = calendar.component(.hour, from: date)
             self.timeLabel.text = "\(month) \(day) at \(hourAndAmPm)"
             self.final_event = Evnt
+            let secondString = Evnt.eventdis!
+
+            let secondAttributes: [NSAttributedString.Key: Any] = [
+                .font : UIFont.systemFont(ofSize: 20, weight: .regular),
+                .foregroundColor: UIColor.label
+            ]
+
+            let secondAttributedString = NSMutableAttributedString(string: secondString, attributes: secondAttributes)
+
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 1.2
+
+            let attributedString = NSMutableAttributedString(attributedString: secondAttributedString)
+            attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
+            
+            
+            self.descriptionLabel.attributedText = attributedString
             group.leave()
             self.Eventt.getEventImages(eventID: self.eventID, Evnt: Evnt) {
                 event in
@@ -125,15 +144,15 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         group.notify(queue: .main) {
             self.tableView.delegate = self
             self.tableView.dataSource = self
-            //        tableView.rowHeight = UITableView.automaticDimension
-            //        tableView.estimatedRowHeight = 1000
             self.tableView.register(EventProfileTableViewCell.self, forCellReuseIdentifier: EventProfileTableViewCell.identifier)
+            self.tableView.reloadData()
         }
         collectionView.dataSource = self
        
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         
         configureView()
+
         delegate?.createBarButtonItem(for: self)
         
         locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
@@ -142,6 +161,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tableView.reloadData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -184,28 +204,11 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         present(actionSheet, animated: true)
     }
     
-
-
-    
-}
-extension EventViewController{
-    
     func configureView() {
-        
         configureScrollView()
         configureCollectionView()
-//        configureTableView()
     }
-//    func configureTableView()
-//    {
-//        NSLayoutConstraint.activate([
-//            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
-//            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-//            tableView.heightAnchor.constraint(equalToConstant: 50)
-//        ])
-//
-//    }
+
     func configureScrollView() {
         view.addSubview(scrollView)
         NSLayoutConstraint.activate([
@@ -258,44 +261,27 @@ extension EventViewController{
         // Constraints for location button
            locationButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 0).isActive = true
         locationButton.rightAnchor.constraint(equalTo: collectionView.rightAnchor, constant: -5).isActive = true
-  
-        let firstString = "Lorem Ipsum is simply "
-        let firstAttributes: [NSAttributedString.Key: Any] = [
-            .font : UIFont.systemFont(ofSize: 20, weight: .medium),
-            .foregroundColor: UIColor.black
-        ]
-        let firstAttributedString = NSMutableAttributedString(string: firstString, attributes: firstAttributes)
+//
+//        let firstString = "Lorem Ipsum is simply "
+//        let firstAttributes: [NSAttributedString.Key: Any] = [
+//            .font : UIFont.systemFont(ofSize: 20, weight: .medium),
+//            .foregroundColor: UIColor.black
+//        ]
+//        let firstAttributedString = NSMutableAttributedString(string: firstString, attributes: firstAttributes)
 
-        let secondString = "dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\n\nIt has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old."
-
-        let secondAttributes: [NSAttributedString.Key: Any] = [
-            .font : UIFont.systemFont(ofSize: 20, weight: .regular),
-            .foregroundColor: UIColor.gray
-        ]
-
-        let secondAttributedString = NSMutableAttributedString(string: secondString, attributes: secondAttributes)
-
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 1.2
-
-        let attributedString = NSMutableAttributedString(attributedString: firstAttributedString)
-        attributedString.append(secondAttributedString)
-        attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
-        
-        
-        descriptionLabel.attributedText = attributedString
+      
     
         let bottomView = UIView()
             
         bottomView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(bottomView)
+        view.addSubview(bottomView)
         
         scrollView.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
             descriptionLabel.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             descriptionLabel.widthAnchor.constraint(equalToConstant: view.frame.size.width - 40),
             descriptionLabel.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 20.0),
-            descriptionLabel.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -50.0)
+            descriptionLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -100.0)
                ])
         
 //        scrollView.addSubview(tableView)
@@ -309,14 +295,13 @@ extension EventViewController{
        
 
         NSLayoutConstraint.activate([
-           bottomView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+           bottomView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
            bottomView.widthAnchor.constraint(equalToConstant: view.frame.size.width - 40),
-            bottomView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.0),
-          bottomView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+//            bottomView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.0),
+          bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
            bottomView.heightAnchor.constraint(equalToConstant: 60)
         ])
 
-        bottomView.backgroundColor = .red
 
         
 
@@ -330,9 +315,9 @@ extension EventViewController{
             tableView.heightAnchor.constraint(equalTo: bottomView.heightAnchor),
             tableView.widthAnchor.constraint(equalTo: bottomView.widthAnchor)
         ])
-//        tableView.rowHeight = 25
+
         tableView.frame = bottomView.bounds
-//        tableView.rowHeight = tableView.frame.height
+        tableView.rowHeight = tableView.frame.height
        }
  
 }

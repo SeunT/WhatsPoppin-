@@ -14,4 +14,6 @@ target 'WhatsPoppin' do
   pod 'FloatingPanel'
   pod 'gRPC-Core'
   pod 'SDWebImage'
+  pod 'FirebaseAppCheck'
+  pod 'FirebaseMessaging'
 end
