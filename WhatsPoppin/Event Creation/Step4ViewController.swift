@@ -10,15 +10,18 @@ import CoreLocation
 import Firebase
 import Photos
 import PhotosUI
+import StoreKit
+
 protocol Step4ViewControllerDelegate: AnyObject
 {
     func step4viewcontroller(_ vc: Step4ViewController, description perm_desc: String?, date_e perm_date: Date)
     
 }
-class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UITextViewDelegate{
+class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UITextViewDelegate, UIScrollViewDelegate{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
         }
+    
     private let time: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -46,6 +49,21 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         label.numberOfLines = 1
         return label
     }()
+    private let promote: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Promote Event!"
+        label.textColor = .label
+        label.font = UIFont(name: "HelveticaNeue-Bold", size: 18)
+        label.numberOfLines = 1
+        label.sizeToFit()
+        return label
+    }()
+    private let promo_bool: UISwitch = {
+        let Switch = UISwitch()
+        Switch.translatesAutoresizingMaskIntoConstraints = false
+       return Switch
+    }()
     private let photo1:UIButton =
     {
         let button = UIButton()
@@ -64,6 +82,14 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         button.setTitleColor(customColor, for: .normal)
         return button
     }()
+    let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
     
 //    @IBOutlet weak var time: UILabel!
 //    @IBOutlet weak var address: UILabel!
@@ -78,11 +104,11 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         collectionView.backgroundColor = .clear
         return collectionView
     }()
-    let pageView: UIPageControl = {
-        let pageView = UIPageControl()
-        pageView.translatesAutoresizingMaskIntoConstraints = false
-        return pageView
-    }()
+//    let pageView: UIPageControl = {
+//        let pageView = UIPageControl()
+//        pageView.translatesAutoresizingMaskIntoConstraints = false
+//        return pageView
+//    }()
     
 //    @IBOutlet weak var pageView: UIPageControl!
 //    @IBOutlet weak var create_button: UIButton!
@@ -123,6 +149,15 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
 //        return date
 //    }()
 //
+    let activitySpinner: UIActivityIndicatorView = {
+        let activitySpinner = UIActivityIndicatorView(style: .large)
+        activitySpinner.translatesAutoresizingMaskIntoConstraints = false
+        activitySpinner.hidesWhenStopped = true
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        activitySpinner.color = customColor
+        return activitySpinner
+    }()
+    
     var geoP:GeoPoint!
     var event_desc:String!
     var event_date:Date!
@@ -137,7 +172,7 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         perm_addy.text = event_addy
         perm_desc.text = event_desc
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         slider.dataSource = self
         slider.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
@@ -146,11 +181,25 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         configure_constraints()
         create_button.addTarget(self, action: #selector(createEvent), for: .touchUpInside)
         photo1.addTarget(self, action: #selector(Photo1), for: .touchUpInside)
+        configureNavigationBar()
+        setUpDismissKeyboardGesture()
         
     }
+    private func setUpDismissKeyboardGesture() {
+           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+           self.view.addGestureRecognizer(tapGesture)
+       }
+
+       @objc func dismissKeyboard() {
+           self.view.endEditing(true)
+           if self.view.frame.origin.y != 0 {
+               self.view.frame.origin.y = 0
+           }
+       }
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
@@ -159,44 +208,114 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
             }
         }
     }
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
-        }
+
+//    @objc func keyboardWillHide(notification: NSNotification) {
+//        if self.view.frame.origin.y != 0 {
+//            self.view.frame.origin.y = 0
+//        }
+//    }
+    func configureNavigationBar()
+     {
+     
+//         let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+         let rightbutton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancel))
+         rightbutton.tintColor = .systemRed
+//         rightbutton.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: customColor], for: .normal)
+         navigationItem.rightBarButtonItem = rightbutton
+        
+     
+     }
+    @objc private func didTapCancel()
+    {
+        let vc = NewProfileViewController(currentUser: true, currId: "")
+//        navigationController?.pushViewController(vc, animated: false)
+//        navigationController?.popToViewController(vc, animated: false)
+        navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+
+//        if let viewControllers = navigationController?.viewControllers {
+//            print("The current navigation stack:")
+//            for vc in viewControllers {
+//                print(vc)
+//            }
+//        }
+//        dismiss(animated: true, completion: nil)
+        
     }
     func configure_view()
     {
-        view.addSubview(slider)
-        view.addSubview(pageView)
-        view.addSubview(time)
-        view.addSubview(address)
-        view.addSubview(desc)
-        view.addSubview(photo1)
-        view.addSubview(create_button)
-        view.addSubview(perm_addy)
-        view.addSubview(perm_desc)
-        view.addSubview(perm_date)
+        configureScrollView()
+//        view.addSubview(slider)
+////        view.addSubview(pageView)
+//        view.addSubview(time)
+//        view.addSubview(address)
+//        view.addSubview(desc)
+//        view.addSubview(photo1)
+//        view.addSubview(create_button)
+//        view.addSubview(perm_addy)
+//        view.addSubview(perm_desc)
+//        view.addSubview(perm_date)
+        
+        
+    }
+    func configureScrollView() {
+        view.addSubview(scrollView)
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            scrollView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+//            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        ])
+        
+        scrollView.addSubview(slider)
+//        view.addSubview(pageView)
+        scrollView.addSubview(time)
+        scrollView.addSubview(address)
+        scrollView.addSubview(desc)
+        scrollView.addSubview(photo1)
+        scrollView.addSubview(create_button)
+        scrollView.addSubview(perm_addy)
+        scrollView.addSubview(perm_desc)
+        scrollView.addSubview(perm_date)
+        scrollView.addSubview(promote)
+        scrollView.addSubview(promo_bool)
+        
+       
     }
     func configure_constraints()
     {
+        view.addSubview(activitySpinner)
+
+        NSLayoutConstraint.activate([
+            activitySpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activitySpinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            activitySpinner.heightAnchor.constraint(equalToConstant: 50),
+            activitySpinner.widthAnchor.constraint(equalToConstant: 50)
+        ])
+        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width:view.frame.size.width, height: view.frame.size.height)
         slider.collectionViewLayout = layout
-        
+        let initialSize = scrollView.frame.width/2
+        let buttonHeight = scrollView.frame.width/4
+        let buttonWidth = (scrollView.frame.width-10-initialSize)/2.5
+        let textHeight = view.frame.height * 0.125
+
         slider.translatesAutoresizingMaskIntoConstraints = false
           NSLayoutConstraint.activate([
-              slider.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-              slider.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-              slider.widthAnchor.constraint(equalTo: view.widthAnchor),
+              slider.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0),
+              slider.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+              slider.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
               slider.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3)
           ])
-        NSLayoutConstraint.activate([
-            pageView.topAnchor.constraint(equalTo: slider.bottomAnchor, constant: 10),
-            pageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            pageView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            pageView.heightAnchor.constraint(equalToConstant: 20)
-        ])
+//        NSLayoutConstraint.activate([
+//            pageView.topAnchor.constraint(equalTo: slider.bottomAnchor, constant: 10),
+//            pageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            pageView.widthAnchor.constraint(equalTo: view.widthAnchor),
+//            pageView.heightAnchor.constraint(equalToConstant: 20)
+//        ])
         
         photo1.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -209,14 +328,14 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         // Add constraints for time label
         time.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            time.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            time.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             time.topAnchor.constraint(equalTo: photo1.bottomAnchor, constant: 20),
         ])
 
         // Add constraints for perm_date
         perm_date.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            perm_date.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            perm_date.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 15),
             perm_date.topAnchor.constraint(equalTo: time.bottomAnchor, constant: 10),
             perm_date.heightAnchor.constraint(equalToConstant: 40)
         ])
@@ -225,7 +344,7 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         // Add constraints for address label
         address.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            address.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            address.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             address.topAnchor.constraint(equalTo: perm_date.bottomAnchor, constant: 20),
             address.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
@@ -233,7 +352,7 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         // Add constraints for perm_addy
         perm_addy.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            perm_addy.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            perm_addy.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             perm_addy.topAnchor.constraint(equalTo: address.bottomAnchor, constant: 10),
             perm_addy.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
@@ -241,27 +360,54 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         // Add constraints for desc label
         desc.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            desc.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            desc.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             desc.topAnchor.constraint(equalTo: perm_addy.bottomAnchor, constant: 20),
             desc.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
         // Add constraints for perm_desc
           perm_desc.translatesAutoresizingMaskIntoConstraints = false
           NSLayoutConstraint.activate([
-              perm_desc.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+              perm_desc.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
               perm_desc.topAnchor.constraint(equalTo: desc.bottomAnchor, constant: 10),
               perm_desc.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-              perm_desc.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.2)
+//              perm_desc.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15)
+              perm_desc.heightAnchor.constraint(equalToConstant: textHeight)
           ])
           //Add constraints for create_button
-          create_button.translatesAutoresizingMaskIntoConstraints = false
-          NSLayoutConstraint.activate([
-              create_button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-//              create_button.topAnchor.constraint(equalTo: perm_desc.bottomAnchor, constant: 10),
-              create_button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-              create_button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
-          ])
+//          create_button.translatesAutoresizingMaskIntoConstraints = false
+//          NSLayoutConstraint.activate([
+//              create_button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+////              create_button.topAnchor.constraint(equalTo: perm_desc.bottomAnchor, constant: 10),
+//              create_button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+//              create_button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30)
+//          ])
+        NSLayoutConstraint.activate([
+            promote.topAnchor.constraint(equalTo: perm_desc.bottomAnchor, constant: 25),
+            promote.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20)
+//            promote.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 20)
+
+        ])
+        
+        NSLayoutConstraint.activate([
+            promo_bool.centerYAnchor.constraint(equalTo: promote.centerYAnchor),
+            promo_bool.leftAnchor.constraint(equalTo: promote.rightAnchor, constant: 20)
+//            promo_bool.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+         
+        ])
+        
+        
       
+        create_button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+//            create_button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+//              create_button.topAnchor.constraint(equalTo: perm_desc.bottomAnchor, constant: 10),
+//            create_button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            create_button.topAnchor.constraint(equalTo: promote.bottomAnchor, constant: 40),
+//            create_button.heightAnchor.constraint(equalToConstant: buttonHeight),
+//            create_button.widthAnchor.constraint(equalToConstant: buttonWidth),
+            create_button.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            create_button.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor,constant: -10)
+        ])
       }
     
     
@@ -289,6 +435,7 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
             
         }
     }
+    
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         
@@ -321,9 +468,9 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
             print(self.imgArr.count)
             self.slider.reloadData()
 
-            self.pageView.numberOfPages = self.imgArr.count
-            self.pageView.currentPage = 0
-            
+//            self.pageView.numberOfPages = self.imgArr.count
+//            self.pageView.currentPage = 0
+//
             
 
         }
@@ -338,6 +485,7 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
                               limit: 100)
     }
 
+    
     private func textLimit(existingText: String?,
                            newText: String,
                            limit: Int) -> Bool {
@@ -354,6 +502,7 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         let error = validateFields()
         
         
+       
         if imgArr.isEmpty {
             
             let alert = UIAlertController(title: "Please add images", message: nil, preferredStyle: .alert)
@@ -366,31 +515,58 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
         
         else
         {
-            geoP = GeoPoint(latitude: location!.latitude, longitude: location!.longitude)
-            let user = User.getUserData()
-            
-            Event.addEventObject(user: (user?.uuid)!, coord: geoP, desc: self.perm_desc.text!, images: self.imgArr, time: self.perm_date.date, addy: self.perm_addy.text!, EventUserID: (user?.uuid)!, EventUsername: (user?.name)!,EventUserPhoto: (user?.pfp)!)
-            
-            let alert = UIAlertController(title: "Event Created", message: "", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-//                let vc = self.storyboard?.instantiateViewController(identifier: "Nav3") as? UINavigationController
-//                self.view.window?.rootViewController = vc
-//                self.view.window?.makeKeyAndVisible()
-//                let VC = MapViewController()
-//                                    VC.modalPresentationStyle = .fullScreen
-//                                    self.present(VC, animated: true)
-//                                    {
-                                        self.navigationController?.popToRootViewController(animated: true)
-                        
+            if promo_bool.isOn
+            {
+                // Disable user interaction on the view
+                view.isUserInteractionEnabled = false
                 
-//                                    }
-//                present(vc!, animated: true, completion: nil)
-            }))
-            self.present(alert, animated: true)
-            
+                activitySpinner.startAnimating()
+                IAPManager.shared.purchase(product: .promoteEvent)
+                { result,success,error  in
+                    
+                    self.activitySpinner.stopAnimating()
+                    // Re-enable user interaction on the view
+                      self.view.isUserInteractionEnabled = true
+                  
+                    
+                    if(success)
+                    {
+                        self.FinalcreatEvent(Ispromoted: true)
+                    }
+                    else
+                    {
+                        let alert = UIAlertController(title: "Error purchasing promotion", message: error?.localizedDescription, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler:nil))
+                        self.present(alert, animated: true)
+                        
+                    }
+                }
+                
+            }
+            else 
+            {
+                FinalcreatEvent(Ispromoted: false)
+            }
             
         }
        
+    }
+    func FinalcreatEvent(Ispromoted:Bool)
+    {
+        
+        geoP = GeoPoint(latitude: location!.latitude, longitude: location!.longitude)
+        let user = User.getUserData()
+        
+        Event.addEventObject(user: (user?.uuid)!, coord: geoP, desc: self.perm_desc.text!, images: self.imgArr, time: self.perm_date.date, addy: self.perm_addy.text!, EventUserID: (user?.uuid)!, EventUsername: (user?.name)!,EventUserPhoto: (user?.pfp)!, promoted:Ispromoted)
+        //update boolean to true so the map spawns on the users current location
+        UserDefaults.standard.set(true, forKey: "updateMap")
+        
+        let alert = UIAlertController(title: "Event Created", message: "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            
+            self.navigationController?.popToRootViewController(animated: true)
+        }))
+        self.present(alert, animated: true)
     }
     func validateFields() -> String? {
         
@@ -412,7 +588,6 @@ class Step4ViewController: UIViewController, PHPickerViewControllerDelegate, UIT
     }
     
 
-    
 
     
     
@@ -462,16 +637,17 @@ extension Step4ViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 
-       let visibleRect = CGRect(origin: slider.contentOffset, size: slider.bounds.size)
-       let midPointOfVisibleRect = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-       if let visibleIndexPath = slider.indexPathForItem(at: midPointOfVisibleRect) {
-                pageView.currentPage = visibleIndexPath.row
-       }
+//       let visibleRect = CGRect(origin: slider.contentOffset, size: slider.bounds.size)
+//       let midPointOfVisibleRect = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+//       if let visibleIndexPath = slider.indexPathForItem(at: midPointOfVisibleRect) {
+//                pageView.currentPage = visibleIndexPath.row
+//       }
     }
-    
+   
 }
 
-extension Step4ViewController: UICollectionViewDelegateFlowLayout {
+extension Step4ViewController: UICollectionViewDelegateFlowLayout
+{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top:0, left:0, bottom:0, right:0)
     }

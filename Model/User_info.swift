@@ -39,8 +39,8 @@ class User_info
                     
                     // Save the data to Core Data
                     DispatchQueue.main.async {
-                        print(doc?.get("image") as? String ?? "")
-                        print(doc?.get("bio"))
+//                        print(doc?.get("image") as? String ?? "")
+//                        print(doc?.get("bio"))
                         
                         let Info = info(fn: doc?.get("name") as? String ?? "", fd: doc?.get("bio") as? String ?? "", fin: doc?.get("image") as? String ?? "")
                         completion(Info)
@@ -64,8 +64,8 @@ class User_info
                     
                     // Save the data to Core Data
                     DispatchQueue.main.async {
-                        print(doc?.get("image") as? String ?? "")
-                        print(doc?.get("bio"))
+//                        print(doc?.get("image") as? String ?? "")
+//                        print(doc?.get("bio"))
                         
                         let Info = info(fn: doc?.get("name") as? String ?? "", fd: doc?.get("bio") as? String ?? "", fin: doc?.get("image") as? String ?? "")
                         completion(Info)
@@ -83,7 +83,7 @@ class User_info
     {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
-
+ 
         context.perform {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_user")
             do {
@@ -347,7 +347,7 @@ class User_info
     {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
-
+     
         // Delete all data from Core_events entity
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_events")
         context.perform{
@@ -381,6 +381,8 @@ class User_info
       //attempt to log out
         do {
             try Auth.auth().signOut()
+            UserDefaults.standard.removeObject(forKey: "uuid")
+            UserDefaults.standard.synchronize()
             completion(true)
             return
         }
@@ -408,14 +410,15 @@ class User_info
         return UserCache.shared.getUser()
     }
     
-    func setup(user:String, nm:String, dat:Data, completion:@escaping()->())
+    func setup(user:String, nm:String, dat:Data, completion:@escaping(Bool)->())
     {
       
        
         addPP(user: user, dat: dat){
-            image in
+            success in
             
-            self.db.collection("users").document(user).setData(["image":image, "name":nm, "bio": " "])
+            let fcmToken = self.userDefault.string(forKey: "fcmToken") ?? ""
+            self.db.collection("users").document(user).setData(["name":nm, "bio": " ","fcmToken": fcmToken],merge: true)
 
             //need to grab existing user
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -425,79 +428,72 @@ class User_info
                 let users = try context.fetch(fetchRequest) as! [Core_user]
                 users.first!.setValue(user, forKey: "uuid")
                 users.first!.setValue(nm, forKey: "name")
-                users.first!.setValue(image, forKey: "pfp")
+//                users.first!.setValue(image, forKey: "pfp")
                 users.first!.setValue(" ", forKey: "bio")
                 try context.save()
+                completion(success)
             } catch {
                 print("Failed saving")
             }
-            completion()
+       
         }
         
     }
-    func addPP(user:String, dat:Data?, completion:@escaping(String)->())
-    {
+    func addPP(user: String, dat: Data?, completion: @escaping (Bool) -> ()) {
         let group = DispatchGroup()
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
-      
         let imageName = NSUUID().uuidString
-        var image:String!
-        let storageRef = Storage.storage().reference().child("profiles/\(user)/\(imageName).png") //Load the Firebase storage
-
-        if let uploadData = dat
-        {
+        var image: String?
+        let storageRef = Storage.storage().reference().child("profiles/\(user)/\(imageName).png")
+        
+        if let uploadData = dat {
             group.enter()
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, err) in
                 if let error = err {
                     print(error)
+                    group.leave()
+                    completion(false)
                     return
                 }
+                
                 storageRef.downloadURL(completion: { (url, err) in
                     if let err = err {
                         print(err)
+                        group.leave()
+                        completion(false)
                         return
                     }
+                    
                     image = url?.absoluteString
+                    let manager = SDWebImageManager.shared
+                    manager.loadImage(with: url, options: .highPriority, progress: nil) { _,_,_,_,_,_  in}
                     group.leave()
                 })
             })
         }
         
-        group.notify(queue: .main)
-        {
-            //add it to core data
+        group.notify(queue: .main) {
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            let context = appDelegate.persistentContainer.viewContext
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Core_user")
+            
             do {
                 let users = try context.fetch(fetchRequest) as! [Core_user]
-                users.first?.setValue(image, forKey: "pfp")
-                self.db.collection("users").document(user).updateData(["image":image])
-                
-                let url = URL(string:image)
-                let manager = SDWebImageManager.shared
-                manager.loadImage(with: url, options: .highPriority, progress: nil) { _,_,_,_,_,_  in}
-            }
-            catch
-            {
-                print("Error deleting from firebase \(error)")
-                
-            }
-            
-            // Save the changes
-
-            do {
-                try context.save()
+                if let image = image {
+                    users.first?.setValue(image, forKey: "pfp")
+//                    self.db.collection("users").document(user).updateData(["image":image])
+                    self.db.collection("users").document(user).setData(["image":image],merge: true)
+                    try context.save()
+                    completion(true)
+                } else {
+                    completion(false)
+                }
             } catch {
-                print("Error saving \(error)")
+                print("Error saving to core data \(error)")
+                completion(false)
             }
-   
-            completion(image)
         }
-
-  
-        
-        
     }
+
     func getOrCreateUser(cred:AuthCredential, completion:@escaping(Int) -> ())
     {
         var return_num = 0
@@ -510,75 +506,92 @@ class User_info
                   let context = appDelegate.persistentContainer.viewContext
                   let newUser = NSEntityDescription.insertNewObject(forEntityName: "Core_user", into: context)
                   
-                    self.db.collection("users").document(results!.user.uid).getDocument { (doc, erro) in
+                  self.db.collection("users").document(results!.user.uid).getDocument { (doc, erro) in
                         if erro == nil
                             {
-                          
+                           var onlyfcmTokenExists = true
+                            if doc?.get("name") is String{
+                                onlyfcmTokenExists = false
+                            }
+                                
                             
-                                if !(doc!.exists)
-                                    { //account not created yet
-                                            // go to nav1
-                                    self.userDefault.setValue(results!.user.uid, forKey: "uuid")
-                                    self.userDefault.synchronize()
+                            if !(doc!.exists)
+                            { //account not created yet
+                                // go to nav1
+                                self.userDefault.setValue(results!.user.uid, forKey: "uuid")
+                                self.userDefault.synchronize()
                                 
-                                    return_num = 1
-                                    completion(return_num)
-                                    }
-                                else if (doc!.exists)
-                                    { //account is already created
-                                    let storageRef = Storage.storage().reference(forURL: doc?.get("image") as! String)
-                                    storageRef.downloadURL(completion: { (url, error) in
-                                      
-//                                        let task = URLSession.shared.dataTask(with: url!) { data, response, error in
-//                                            guard let data = data, error == nil else {
-//                                                // handle the error here
-//                                                return
-//                                            }
-//
-                                            // Save the data to Core Data
-                                            DispatchQueue.main.async {
-                                              
-                                                newUser.setValue(doc?.get("name") as? String, forKey: "name")
-                                                newUser.setValue(url?.absoluteString, forKey: "pfp")
-                                                newUser.setValue(results!.user.uid, forKey: "uuid")
-                                                newUser.setValue(doc?.get("bio") as? String, forKey: "bio")
-                                                newUser.setValue(doc?.get("email") as? String, forKey: "email")
-                                                newUser.setValue(doc?.get("gender") as? String, forKey: "gender")
-                                                do {
-                                                    try context.save()
-                                                    return_num = 2
-                                                    completion(return_num)
-                                                } catch {
-                                                    print("Failed saving")
-                                                }
-                                            }
-//                                        }
-//                                        task.resume()
-                                                
-                                     
-                                    })
-                                  
-                                  // go to nav 3
-                                }
-                                
+                                return_num = 1
+                                completion(return_num)
                             }
-                        self.db.collection("users").document(results!.user.uid).collection("events").getDocuments { doc, err in
-                            if err == nil
+                            else if (onlyfcmTokenExists)
                             {
+                                self.userDefault.setValue(results!.user.uid, forKey: "uuid")
+                                self.userDefault.synchronize()
+                                
+                                return_num = 1
+                                completion(return_num)
                                 
                             }
+                            else if (doc!.exists && !onlyfcmTokenExists)
+                            { //account is already created
+                                
+                                let storageRef = Storage.storage().reference(forURL: doc?.get("image") as! String)
+                                storageRef.downloadURL(completion: { (url, error) in
+                                    
+                                    //                                        let task = URLSession.shared.dataTask(with: url!) { data, response, error in
+                                    //                                            guard let data = data, error == nil else {
+                                    //                                                // handle the error here
+                                    //                                                return
+                                    //                                            }
+                                    //
+                                    // Save the data to Core Data
+                                    
+                                    DispatchQueue.main.async {
+                                        self.userDefault.setValue(results!.user.uid, forKey: "uuid")
+                                        newUser.setValue(doc?.get("name") as? String, forKey: "name")
+                                        newUser.setValue(url?.absoluteString, forKey: "pfp")
+                                        newUser.setValue(results!.user.uid, forKey: "uuid")
+                                        newUser.setValue(doc?.get("bio") as? String, forKey: "bio")
+                                        newUser.setValue(doc?.get("email") as? String, forKey: "email")
+                                        newUser.setValue(doc?.get("gender") as? String, forKey: "gender")
+                                        
+                                        
+                                        do {
+                                            try context.save()
+                                            return_num = 2
+                                            completion(return_num)
+                                        } catch {
+                                            print("Failed saving")
+                                        }
+                                    }
+                                    //                                        }
+                                    //                                        task.resume()
+                                    
+                                    
+                                })
+                                
+                                // go to nav 3
+                            }
+                            
                         }
-                       
-                    }
-                }
-            else
-              {
-                
-               //produce error message
-                return_num = 3
-               completion(return_num)
-                //error verifying phone number
+                      self.db.collection("users").document(results!.user.uid).collection("events").getDocuments { doc, err in
+                          if err == nil
+                          {
+                              
+                          }
+                      }
+                      
+                  }
               }
+            else
+            {
+                
+                //produce error message
+                return_num = 3
+                completion(return_num)
+                //error verifying phone number
+            }
             
         }
         

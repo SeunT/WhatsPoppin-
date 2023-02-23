@@ -74,6 +74,16 @@ class ViewController: UIViewController {
         button.backgroundColor = customColor
         return button
     }()
+    private let skip :UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let attributedText = NSMutableAttributedString(string: "skip")
+        attributedText.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: attributedText.length))
+        button.setAttributedTitle(attributedText, for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 12)
+        return button
+    }()
     
     override func viewDidLoad() {
 
@@ -82,11 +92,13 @@ class ViewController: UIViewController {
         let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
         view.backgroundColor = customColor
         signinB.addTarget(self, action: #selector(continue_next), for: .touchUpInside)
+        skip.addTarget(self, action: #selector(skip_view), for: .touchUpInside)
         // Do any additional setup after loading the view.
         view.addSubview(appicon)
         view.addSubview(signinB)
         view.addSubview(appname)
         view.addSubview(textView)
+        view.addSubview(skip)
     
 //        appicon.frame = CGRect(x: view.frame.minX, y: view.frame.midY, width: 125, height: 125).integral
         NSLayoutConstraint.activate([
@@ -118,11 +130,27 @@ class ViewController: UIViewController {
             textView.heightAnchor.constraint(equalToConstant: 50),
             textView.widthAnchor.constraint(equalToConstant: 0)
         ])
+        
+        NSLayoutConstraint.activate([
+            skip.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            skip.topAnchor.constraint(equalTo: signinB.bottomAnchor),
+            skip.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
      
     }
 
-    
-
+    override func viewDidAppear(_ animated: Bool)
+    {
+        //update boolean to true so the map spawns on the users current location
+        //this is used if a user does not exit out of the map completely and decides to login
+        UserDefaults.standard.set(true, forKey: "updateMap")
+        
+    }
+    @objc func skip_view()
+    {
+        let vc = MapViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
     @objc func continue_next()
     {
         let vc = NumberPassthrough()

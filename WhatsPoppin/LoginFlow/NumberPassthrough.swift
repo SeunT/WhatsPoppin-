@@ -101,6 +101,10 @@ class NumberPassthrough: UIViewController, UITextFieldDelegate  {
             let phoneNumber = "+1\(number.replacingOccurrences(of: ")", with: ""))"
 
             PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
+                
+                if error != nil {
+                    print("error verify phone \(error?.localizedDescription ?? "")")
+                }
                 if error == nil {
                     self.continue_n.hideLoading()
                     print(verificationID!)

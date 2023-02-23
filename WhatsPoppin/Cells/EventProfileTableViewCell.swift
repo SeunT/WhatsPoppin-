@@ -96,7 +96,8 @@ class EventProfileTableViewCell: UITableViewCell {
 
         NSLayoutConstraint.activate([
                PostedBy.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-               PostedBy.topAnchor.constraint(equalTo: contentView.topAnchor)
+//               PostedBy.topAnchor.constraint(equalTo: contentView.topAnchor)
+               PostedBy.centerYAnchor.constraint(equalTo: photoImageView.centerYAnchor)
            ])
 
         let profilePhotoSize = contentView.frame.height/2 - 12

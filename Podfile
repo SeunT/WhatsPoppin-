@@ -16,4 +16,5 @@ target 'WhatsPoppin' do
   pod 'SDWebImage'
   pod 'FirebaseAppCheck'
   pod 'FirebaseMessaging'
+  pod 'FirebaseDynamicLinks'
 end

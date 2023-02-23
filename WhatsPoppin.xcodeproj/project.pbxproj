@@ -26,6 +26,16 @@
 		2C65FF2128D6507400229A1C /* Step4ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF2028D6507400229A1C /* Step4ViewController.swift */; };
 		2C65FF2328D787B000229A1C /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF2228D787B000229A1C /* LocationManager.swift */; };
 		2C65FF2528D78CDF00229A1C /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C65FF2428D78CDF00229A1C /* SearchViewController.swift */; };
+		2C665431299AED0D0080DC60 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C665430299AED0D0080DC60 /* ListViewController.swift */; };
+		2C665433299AF04F0080DC60 /* UserFollowTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C665432299AF04F0080DC60 /* UserFollowTableViewCell.swift */; };
+		2C665435299B34AB0080DC60 /* ListUserTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C665434299B34AB0080DC60 /* ListUserTableViewCellViewModel.swift */; };
+		2C665437299C28C70080DC60 /* FollowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C665436299C28C70080DC60 /* FollowButton.swift */; };
+		2C66543A299C2F8A0080DC60 /* ProfileHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C665439299C2F8A0080DC60 /* ProfileHeaderViewModel.swift */; };
+		2C66543D299C3E1C0080DC60 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C66543C299C3E1C0080DC60 /* DatabaseManager.swift */; };
+		2C66543F299C40660080DC60 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C66543E299C40660080DC60 /* UserInfo.swift */; };
+		2C665442299C4A5D0080DC60 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C665441299C4A5D0080DC60 /* StorageManager.swift */; };
+		2C66544429A15C350080DC60 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C66544329A15C350080DC60 /* StoreKit.framework */; };
+		2C66544629A1D8840080DC60 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C66544529A1D8840080DC60 /* IAPManager.swift */; };
 		2C7745B7297DCA9100FAF5FE /* NewProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745B6297DCA9100FAF5FE /* NewProfileViewController.swift */; };
 		2C7745BD297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745BC297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift */; };
 		2C7745BF297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7745BE297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift */; };
@@ -69,6 +79,16 @@
 		2C65FF2028D6507400229A1C /* Step4ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step4ViewController.swift; sourceTree = "<group>"; };
 		2C65FF2228D787B000229A1C /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		2C65FF2428D78CDF00229A1C /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		2C665430299AED0D0080DC60 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		2C665432299AF04F0080DC60 /* UserFollowTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFollowTableViewCell.swift; sourceTree = "<group>"; };
+		2C665434299B34AB0080DC60 /* ListUserTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListUserTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		2C665436299C28C70080DC60 /* FollowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowButton.swift; sourceTree = "<group>"; };
+		2C665439299C2F8A0080DC60 /* ProfileHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderViewModel.swift; sourceTree = "<group>"; };
+		2C66543C299C3E1C0080DC60 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		2C66543E299C40660080DC60 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
+		2C665441299C4A5D0080DC60 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		2C66544329A15C350080DC60 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		2C66544529A1D8840080DC60 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		2C7745B6297DCA9100FAF5FE /* NewProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProfileViewController.swift; sourceTree = "<group>"; };
 		2C7745BC297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		2C7745BE297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
@@ -104,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CE4C8618BB3F0304B071628 /* Pods_WhatsPoppin.framework in Frameworks */,
+				2C66544429A15C350080DC60 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,6 +137,7 @@
 				2C02B07226AB55E600BF28A3 /* User_info.swift */,
 				2C0D176826BF6626007B9400 /* Events.swift */,
 				2C65FF2228D787B000229A1C /* LocationManager.swift */,
+				2C66543E299C40660080DC60 /* UserInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -132,10 +154,30 @@
 			path = "Event Creation";
 			sourceTree = "<group>";
 		};
+		2C665438299C2F5B0080DC60 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				2C665434299B34AB0080DC60 /* ListUserTableViewCellViewModel.swift */,
+				2C665439299C2F8A0080DC60 /* ProfileHeaderViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		2C66543B299C3E020080DC60 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				2C66543C299C3E1C0080DC60 /* DatabaseManager.swift */,
+				2C665441299C4A5D0080DC60 /* StorageManager.swift */,
+				2C66544529A1D8840080DC60 /* IAPManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		2C7745B8297DD0C100FAF5FE /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				2C7745BB297DD45D00FAF5FE /* Headers */,
+				2C665436299C28C70080DC60 /* FollowButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -146,6 +188,7 @@
 				2C7745BC297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift */,
 				2C7745C2297F1F8500FAF5FE /* FormTableViewCell.swift */,
 				2C7745C429831FE900FAF5FE /* EventProfileTableViewCell.swift */,
+				2C665432299AF04F0080DC60 /* UserFollowTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -193,6 +236,8 @@
 		2CD93F592656127D00D63569 = {
 			isa = PBXGroup;
 			children = (
+				2C66543B299C3E020080DC60 /* Managers */,
+				2C665438299C2F5B0080DC60 /* ViewModels */,
 				2C7A3BE92967DA0600AAA982 /* Cache */,
 				2C02B07126AB55CE00BF28A3 /* Model */,
 				2CD93F642656127D00D63569 /* WhatsPoppin */,
@@ -237,6 +282,7 @@
 				2C336D3729789B92008C4105 /* coreModel.xcdatamodeld */,
 				2C7745B6297DCA9100FAF5FE /* NewProfileViewController.swift */,
 				2CD82AFF299058710054B627 /* LoadingButton.swift */,
+				2C665430299AED0D0080DC60 /* ListViewController.swift */,
 			);
 			path = WhatsPoppin;
 			sourceTree = "<group>";
@@ -244,6 +290,7 @@
 		2F7587516EDCC2F6BE656C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C66544329A15C350080DC60 /* StoreKit.framework */,
 				75D94D92785866D039EAC1F2 /* Pods_WhatsPoppin.framework */,
 			);
 			name = Frameworks;
@@ -373,40 +420,49 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C665433299AF04F0080DC60 /* UserFollowTableViewCell.swift in Sources */,
 				2C7A3BEB2967DA1400AAA982 /* ImageCache.swift in Sources */,
 				2C7745C529831FE900FAF5FE /* EventProfileTableViewCell.swift in Sources */,
 				2C336D3B297A06D0008C4105 /* UserCache.swift in Sources */,
 				2C65FF1B28D64F7D00229A1C /* Step1ViewController.swift in Sources */,
+				2C66543A299C2F8A0080DC60 /* ProfileHeaderViewModel.swift in Sources */,
 				2CD93F6A2656127D00D63569 /* ViewController.swift in Sources */,
 				2C7745C1297DD55100FAF5FE /* ProfileTabsCollectionReusableView.swift in Sources */,
 				2CC818A32966354000AC6487 /* EventViewController.swift in Sources */,
 				2C65FF1F28D64FFE00229A1C /* Step3ViewController.swift in Sources */,
 				2C0D176926BF6626007B9400 /* Events.swift in Sources */,
 				2CD93F662656127D00D63569 /* AppDelegate.swift in Sources */,
+				2C665437299C28C70080DC60 /* FollowButton.swift in Sources */,
 				2C7745C3297F1F8500FAF5FE /* FormTableViewCell.swift in Sources */,
 				2C65FF2128D6507400229A1C /* Step4ViewController.swift in Sources */,
 				2C336D3029787641008C4105 /* SettingsViewController.swift in Sources */,
 				2CF75D582977563300CEABA1 /* EditProfileViewController.swift in Sources */,
+				2C665431299AED0D0080DC60 /* ListViewController.swift in Sources */,
 				2CD82AFA2985CC210054B627 /* OtherUserCache.swift in Sources */,
 				2C02B07326AB55E600BF28A3 /* User_info.swift in Sources */,
 				2C02B07526AB636400BF28A3 /* NameViewController.swift in Sources */,
 				2C336D3929789B92008C4105 /* coreModel.xcdatamodeld in Sources */,
 				2CD93F682656127D00D63569 /* SceneDelegate.swift in Sources */,
 				2C0D176B26BF669C007B9400 /* ProfileViewController.swift in Sources */,
+				2C66544629A1D8840080DC60 /* IAPManager.swift in Sources */,
 				2C65FF2328D787B000229A1C /* LocationManager.swift in Sources */,
+				2C665435299B34AB0080DC60 /* ListUserTableViewCellViewModel.swift in Sources */,
 				2C1301C42661BD9F002EAF0F /* VerifyViewController.swift in Sources */,
 				2CD82B00299058710054B627 /* LoadingButton.swift in Sources */,
 				2C7745BD297DD4AE00FAF5FE /* PhotoCollectionViewCell.swift in Sources */,
 				2CCB0797295FBAD000E452A8 /* EntryPointViewController.swift in Sources */,
 				2C7745BF297DD51C00FAF5FE /* ProfileInfoHeaderCollectionReusableView.swift in Sources */,
 				2C4157222949527D00CDEDDE /* MapEventViewController.swift in Sources */,
+				2C665442299C4A5D0080DC60 /* StorageManager.swift in Sources */,
 				2C65FF1D28D64FF200229A1C /* Step2ViewController.swift in Sources */,
 				2C65FF2528D78CDF00229A1C /* SearchViewController.swift in Sources */,
 				2C7A3BED29748DD600AAA982 /* EventCache.swift in Sources */,
 				2C02B07026AB52D600BF28A3 /* SetupPictureViewController.swift in Sources */,
 				2C0D176726BF1897007B9400 /* EventTableViewCell.swift in Sources */,
 				2C3C3550289C2170009F9368 /* MapViewController.swift in Sources */,
+				2C66543D299C3E1C0080DC60 /* DatabaseManager.swift in Sources */,
 				2C1301C22661BBA1002EAF0F /* NumberPassthrough.swift in Sources */,
+				2C66543F299C40660080DC60 /* UserInfo.swift in Sources */,
 				2C7745B7297DCA9100FAF5FE /* NewProfileViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -557,7 +613,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WhatsPoppin/WhatsPoppin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 9Y494N8DR2;
 				INFOPLIST_FILE = WhatsPoppin/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "WhatsPoppin?";
@@ -566,7 +622,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1;
+				MARKETING_VERSION = 1.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Medulla-Logic.WhatsPoppin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -585,7 +641,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = WhatsPoppin/WhatsPoppinRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 9Y494N8DR2;
 				INFOPLIST_FILE = WhatsPoppin/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "WhatsPoppin?";
@@ -594,7 +650,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1;
+				MARKETING_VERSION = 1.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Medulla-Logic.WhatsPoppin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

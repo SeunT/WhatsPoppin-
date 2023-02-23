@@ -22,4 +22,7 @@ class EventCache {
         let key = "\(lat)-\(long)-\(distance)"
         return cache[key]
     }
+    func clearCache() {
+        cache.removeAll()
+    }
 }

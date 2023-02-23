@@ -110,6 +110,19 @@ class VerifyViewController: UIViewController {
                  
                  //log in user
     
+                 
+                 if let user = Auth.auth().currentUser {
+                     let fcmToken = UserDefaults.standard.string(forKey: "fcmToken") ?? ""
+                       let docRef = Firestore.firestore().collection("users").document(user.uid)
+                       docRef.setData(["fcmToken": fcmToken], merge: true) { error in
+                           if let error = error {
+                               print("Error saving FCM token: \(error.localizedDescription)")
+                           } else {
+                               print("FCM token saved successfully")
+                           }
+                       }
+                   }
+                 
                  self.Event.loadUserEvents(){
                      res in
                      self.continue_n.hideLoading()
@@ -127,11 +140,15 @@ class VerifyViewController: UIViewController {
                             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                             let nav3 = storyboard.instantiateViewController(withIdentifier: "Nav3") as! UINavigationController
                             UIApplication.shared.keyWindow?.rootViewController = nav3
+                            
 
                         }
                     }
                      else {
                          print("error logging in")
+                         let alert = UIAlertController(title: "Error", message: "Error logging in. Please try again", preferredStyle: .alert)
+                         alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                         self.present(alert, animated: true)
                      }
            
                  }

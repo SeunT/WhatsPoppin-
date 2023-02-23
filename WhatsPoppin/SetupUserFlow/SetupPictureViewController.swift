@@ -202,7 +202,8 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
             picker.delegate = self
             picker.allowsEditing = false
             picker.sourceType = .photoLibrary
-            picker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)!
+            picker.mediaTypes = ["public.image"]
+//            picker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)!
             picker.modalPresentationStyle = .popover
             picker.allowsEditing = true
             self.present(picker, animated: true, completion: nil)
@@ -274,12 +275,30 @@ class SetupPictureViewController: UIViewController, UIImagePickerControllerDeleg
         }else
         {
             self.User.setup(user: useruuid, nm: self.name, dat:imagdat){
-                self.enableViews()
-            }
                 
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                let nav3 = storyboard.instantiateViewController(withIdentifier: "Nav3") as! UINavigationController
-                UIApplication.shared.keyWindow?.rootViewController = nav3
+                success in
+                
+                if success
+                {
+                    //update boolean to true so the map spawns on the users current location
+                    //this is used if a user does not exit out of the map completely and decides to login
+                    UserDefaults.standard.set(true, forKey: "updateMap")
+                    
+                    self.enableViews()
+                    //                UserCache.shared.getUser()
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let nav3 = storyboard.instantiateViewController(withIdentifier: "Nav3") as! UINavigationController
+                    UIApplication.shared.keyWindow?.rootViewController = nav3
+                }
+                else
+                {
+                    let alert = UIAlertController(title: "Error saving image", message: "Please try again", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: {
+                        _ in
+                        self.enableViews()
+                    }))
+                }
+            }
 //                self.view.window?.makeKeyAndVisible()
         }
     }

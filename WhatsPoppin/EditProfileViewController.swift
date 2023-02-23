@@ -38,7 +38,14 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
     var name_error:Bool!
     private var models =  [[EditProfileFormModel]]()
     private var updatemodel = [EditProfileFormModel]()
-    
+    let activitySpinner: UIActivityIndicatorView = {
+        let activitySpinner = UIActivityIndicatorView(style: .large)
+        activitySpinner.translatesAutoresizingMaskIntoConstraints = false
+        activitySpinner.hidesWhenStopped = true
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        activitySpinner.color = customColor
+        return activitySpinner
+    }()
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -46,6 +53,14 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
         tableView.tableHeaderView = createTableHeaderView()
         tableView.dataSource = self
         view.addSubview(tableView)
+        view.addSubview(activitySpinner)
+           
+        NSLayoutConstraint.activate([
+            activitySpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activitySpinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            activitySpinner.heightAnchor.constraint(equalToConstant: 50),
+            activitySpinner.widthAnchor.constraint(equalToConstant: 50)
+        ])
         view.backgroundColor = .systemBackground
         let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
         let rightbutton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(didTapSave))
@@ -192,7 +207,8 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
     @objc private func didTapSave()
     {//save info to database and core data
      
-        let global = DispatchGroup()
+    
+//        let global = DispatchGroup()
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
@@ -229,7 +245,8 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
             
             if(profileImagDat != nil)
             {
-                global.enter()
+                activitySpinner.startAnimating()
+                
                 
                 
                 let imageName = NSUUID().uuidString
@@ -245,7 +262,10 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
                 folderToDelete.listAll { (result, error) in
                     if let error = error {
                         // Handle the error
+                        let alert = UIAlertController(title: "Error saving information", message: "Please try again", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
                         print("error getting list of images \(error)")
+                        return
                     } else {
                         
                         
@@ -254,7 +274,10 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
                             item.delete { error in
                                 if let error = error {
                                     // Handle the error
+                                    let alert = UIAlertController(title: "Error saving information", message: "Please try again", preferredStyle: .alert)
+                                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
                                     print("error deleting from db \(error)")
+                                    return
                                 } else
                                 {
                                     count+=1
@@ -275,49 +298,46 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
                        
                     }
                 }
-//
-//                if let uploadData = profileImagDat
-//                {
-                    
-//                    storageRef.putData(uploadData, metadata: nil, completion: { (metadata, err) in
-//                        if let error = err {
-//                            print(error)
-//                            return
-//                        }
-//                        storageRef.downloadURL(completion: { [self] (url, err) in
-//                            if let err = err {
-//                                print(err)
-//                                return
-//                            }
                             
                        
                 group.notify(queue: .main)
                 {
                     self.User.addPP(user: useruuid, dat:self.profileImagDat)
                     {
-                        _ in
-                        global.leave()
+                        success in
+                        
+                        self.activitySpinner.stopAnimating()
+                        if(success)
+                        {
+                            
+                            self.dismiss(animated: true, completion: nil)
+                            self.delegate?.reloadData()
+                        }
+                        else {
+                            
+                            let alert = UIAlertController(title: "Error saving image", message: "Please try again", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                        }
                     }
                 }
                             
-//
-//                        })
-//                    })
-//                }
+            }else
+            {
+                self.activitySpinner.stopAnimating()
+                self.dismiss(animated: true, completion: nil)
+                self.delegate?.reloadData()
+                
             }
         }
         catch
         {
+            let alert = UIAlertController(title: "Error saving information", message: "Please try again", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             print("Error grabbing uuid \(error)")
             
             
         }
         
-        global.notify(queue: .main)
-        {
-            self.dismiss(animated: true, completion: nil)
-            self.delegate?.reloadData()
-        }
 
         
     }
@@ -357,7 +377,7 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
             picker.delegate = self
             picker.allowsEditing = true
             picker.sourceType = .photoLibrary
-            picker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)!
+            picker.mediaTypes = ["public.image"]
             picker.modalPresentationStyle = .popover
             self.present(picker, animated: true, completion: nil)
 
@@ -415,6 +435,10 @@ extension EditProfileViewController: FormTableViewCellDelegate {
             
         }
         else {
+            if(updatedModel.label == "name" && (updatedModel.value?.trimmingCharacters(in: .whitespaces) != ""))
+            {
+                name_error = false
+            }
             updatemodel.append(updatedModel)
             print(updatedModel.label)
             print("Field updated to: \(updatedModel.value ?? "nil")")

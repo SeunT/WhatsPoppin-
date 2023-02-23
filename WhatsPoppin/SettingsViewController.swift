@@ -43,8 +43,8 @@ class SettingsViewController: UIViewController
         data.append([
             SettingCellModel(title: "Edit Profile"){[weak self] in
                 self?.editProfileTapped()},
-//            SettingCellModel(title: "Invite Friends"){[weak self] in
-//                self?.inviteFriends()},
+            SettingCellModel(title: "Invite Friends"){[weak self] in
+                self?.inviteFriends()},
 //            SettingCellModel(title: "Save Original Posts"){[weak self] in
 //            self?.logOutButtonTapped()},
         ])
@@ -85,7 +85,13 @@ class SettingsViewController: UIViewController
     private func inviteFriends ()
     {
         //show share sheet to invite friends
-        
+        guard let url = URL(string: "https://apps.apple.com/us/app/whatspoppin/id1664587337") else {
+            return
+        }
+        DispatchQueue.main.async {
+            let vc = UIActivityViewController(activityItems: [url], applicationActivities: [])
+            self.present(vc, animated: true)
+        }
     }
     private func editProfileTapped()
     {
@@ -103,6 +109,7 @@ class SettingsViewController: UIViewController
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
         
         actionSheet.addAction(UIAlertAction(title: "Log Out", style: .destructive,handler: {_ in
+       
             self.User.logoutUser(completion: {success in
                 DispatchQueue.main.async {
                 if success {
@@ -153,7 +160,7 @@ class SettingsViewController: UIViewController
         actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: {_ in
             //change to        User.deleteUser()
             
-            
+          
             self.User.deleteUser_E(completion: {success in
                 DispatchQueue.main.async {
                 if success {

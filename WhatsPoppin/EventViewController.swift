@@ -7,7 +7,7 @@
 
 import UIKit
 import SDWebImage
-
+import FirebaseDynamicLinks
 protocol EventViewControllerDelegate {
     func createBarButtonItem(for eventViewController: EventViewController)
 }
@@ -28,6 +28,9 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.alwaysBounceVertical = true
         return scrollView
     }()
     
@@ -37,6 +40,8 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
+        collectionView.isUserInteractionEnabled = true
+        collectionView.alwaysBounceHorizontal = true
         return collectionView
     }()
     let activitySpinner: UIActivityIndicatorView = {
@@ -47,10 +52,28 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
             activitySpinner.color = customColor
             return activitySpinner
         }()
+    let popUpMenuButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
+        let image = UIImage(systemName: "ellipsis", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        button.tintColor = customColor
+        return button
+    }()
     let locationButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "arrow.up.right.diamond.fill"), for: .normal)
+        let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
+        button.tintColor = customColor
+        return button
+    }()
+    let shareButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
         let customColor = UIColor(red: 82/255, green: 10/255, blue: 165/255, alpha: 1)
         button.tintColor = customColor
         return button
@@ -72,7 +95,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         label.textColor = customColor
         label.textAlignment = .left
         label.numberOfLines = 0
-        label.text = "testing"
+        label.text = ""
         return label
     }()
     let loadingImage: UIImageView = {
@@ -92,6 +115,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
 
         let group = DispatchGroup()
         group.enter()
+    
         Eventt.getEventData(eventID: eventID) {
             Evnt in
 //
@@ -102,13 +126,15 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
             dateFormatter.dateFormat = "MMM"
             let month = dateFormatter.string(from: date)
             let calendar = Calendar.current
-            dateFormatter.dateFormat = "h a"
-            let hourAndAmPm = dateFormatter.string(from: date)
+            dateFormatter.dateFormat = "h"
+            let hour = dateFormatter.string(from: date)
+            dateFormatter.dateFormat = "a"
             let ampm = dateFormatter.string(from: date)
            // let month = calendar.component(.month, from: date)
             let day = calendar.component(.day, from: date)
-            let hour = calendar.component(.hour, from: date)
-            self.timeLabel.text = "\(month) \(day) at \(hourAndAmPm)"
+            dateFormatter.dateFormat = "mm"
+            let min = dateFormatter.string(from: date)
+            self.timeLabel.text = "\(month) \(day) at \(hour):\(min) \(ampm)"
             self.final_event = Evnt
             let secondString = Evnt.eventdis!
 
@@ -148,14 +174,18 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
             self.tableView.reloadData()
         }
         collectionView.dataSource = self
+        collectionView.delegate = self
+    
        
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         
         configureView()
 
         delegate?.createBarButtonItem(for: self)
+        configureButtonMenu()
         
-        locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
+//        locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
+//        shareButton.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
     }
 
     
@@ -167,6 +197,19 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
+    func configureButtonMenu() {
+        let menu = UIMenu(title: "Options", children: [
+            UIAction(title: "Show Location ", image: UIImage(systemName: "arrow.up.right.diamond.fill")) { _ in
+                self.locationButtonTapped()
+            },
+            UIAction(title: "Share Event ", image: UIImage(systemName: "square.and.arrow.up")) { _ in
+                self.shareButtonTapped()
+            }
+        ])
+        popUpMenuButton.menu = menu
+        popUpMenuButton.showsMenuAsPrimaryAction = true
+    }
+    
 
     @objc func locationButtonTapped() {
         if let addy = final_event.addy
@@ -179,6 +222,67 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
             }
         }
     }
+    @objc func shareButtonTapped() {
+       
+        guard let ID = self.eventID else {return}
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "www.medullalogic.com"
+        components.path = "/whatspoppin/profiles"
+        
+        let  items = URLQueryItem(name: "eventID", value: ID)
+        components.queryItems = [items]
+        
+        guard let linkParameter = components.url else {return}
+        print("I am sharing \(linkParameter.absoluteString)")
+        
+        //Create the big dynamic link
+        guard let sharelink = DynamicLinkComponents(link: linkParameter, domainURIPrefix: "https://whatspoppinapp.page.link") else {
+            print("Couldn't create FDL components")
+            return
+        }
+        if let myBundleId = Bundle.main.bundleIdentifier {
+            sharelink.iOSParameters = DynamicLinkIOSParameters(bundleID: myBundleId)
+        }
+     
+        sharelink.iOSParameters?.appStoreID = "1664587337"
+        sharelink.iOSParameters?.fallbackURL = URL(string: "https://www.medullalogic.com/whatspoppin")
+        sharelink.socialMetaTagParameters = DynamicLinkSocialMetaTagParameters()
+        sharelink.socialMetaTagParameters?.title = "What's Poppin ?"
+        sharelink.socialMetaTagParameters?.imageURL = URL(string: "https://static.wixstatic.com/media/058c2d_4763370fc5ea45e2a8da998f8cc0248e~mv2.jpeg/v1/fill/w_636,h_1284,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/img1.jpeg")
+        sharelink.socialMetaTagParameters?.descriptionText = "Im bouta get active tonight"
+        
+        guard let longURL = sharelink.url else { return }
+        print("The long dynamic link is \(longURL.absoluteString)")
+        
+        sharelink.shorten{ [weak self] (shortURL, warnings, error) in
+            if let error = error {
+                print("Error creating short link: \(error.localizedDescription)")
+                return
+            }
+
+            if let warnings = warnings {
+                for warning in warnings {
+                    print("FDL Warning: \(warning)")
+                }
+            }
+            guard let shortURL = shortURL else {
+                print("No short link available")
+                return
+            }
+            print("Dynamic link: \(shortURL.absoluteString)")
+            self?.showShareSheet(url: shortURL)
+              // You can now share the shortURL with your users
+          }
+    }
+    
+    func showShareSheet(url: URL)
+    {
+        let promoText = "This is the move tonight"
+        let activityVC = UIActivityViewController(activityItems: [promoText, url], applicationActivities: nil)
+        present(activityVC, animated: true)
+        
+    }
     
     @objc func rightButtonTapped()
     {
@@ -189,9 +293,11 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
         
         actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [self]_ in
+            //update boolean to true so the map spawns on the users current location
+            UserDefaults.standard.set(true, forKey: "updateMap")
             present(DeleteAlert, animated: true, completion: nil)
+            
             Eventt.deleteEvent(eventID: final_event.eventID!, userID: final_event.userid!){
-        
                 DeleteAlert.dismiss(animated: true)
                 
                 let controller = self.storyboard?.instantiateViewController(identifier: "Nav3") as? UINavigationController
@@ -232,7 +338,8 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         
         let topPadding = view.safeAreaInsets.top
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: -topPadding),
+//            collectionView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: -topPadding),
+            collectionView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0),
             collectionView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 250),
             collectionView.widthAnchor.constraint(equalToConstant: view.frame.size.width)
@@ -253,14 +360,29 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         
         scrollView.addSubview(timeLabel)
         
-        scrollView.addSubview(locationButton)
+//        scrollView.addSubview(locationButton)
+//        scrollView.addSubview(shareButton)
 
-        timeLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 10).isActive = true
-        timeLabel.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 10).isActive = true
+        scrollView.addSubview(popUpMenuButton)
+        
+        timeLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 0).isActive = true
+        timeLabel.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 5).isActive = true
 
+        //constrain the pop up menu
+        NSLayoutConstraint.activate([
+            popUpMenuButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 0),
+            popUpMenuButton.rightAnchor.constraint(equalTo: collectionView.rightAnchor, constant: -5)
+        
+        ])
+        
         // Constraints for location button
-           locationButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 0).isActive = true
-        locationButton.rightAnchor.constraint(equalTo: collectionView.rightAnchor, constant: -5).isActive = true
+//           locationButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 0).isActive = true
+//        locationButton.rightAnchor.constraint(equalTo: collectionView.rightAnchor, constant: -5).isActive = true
+//
+//        NSLayoutConstraint.activate([
+//            shareButton.topAnchor.constraint(equalTo: locationButton.bottomAnchor, constant: 5),
+//            shareButton.rightAnchor.constraint(equalTo: collectionView.rightAnchor, constant: -5)
+//        ])
 //
 //        let firstString = "Lorem Ipsum is simply "
 //        let firstAttributes: [NSAttributedString.Key: Any] = [
@@ -274,7 +396,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
         let bottomView = UIView()
             
         bottomView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(bottomView)
+        scrollView.addSubview(bottomView)
         
         scrollView.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
@@ -295,7 +417,7 @@ class EventViewController: UIViewController, UIScrollViewDelegate{
        
 
         NSLayoutConstraint.activate([
-           bottomView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+           bottomView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
            bottomView.widthAnchor.constraint(equalToConstant: view.frame.size.width - 40),
 //            bottomView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.0),
           bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
@@ -362,21 +484,34 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
         }
         return cell
     }
-}
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            if !cell.isHighlighted {
 
-extension EventViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top:0, left:0, bottom:0, right:0)
+                let selectedImageURL = imgArr[indexPath.item]
+                //        let imageView = selectedImage as! UIImageView
+                //        var newImageView:UIImageView
+                let newImageView = UIImageView()
+                newImageView.sd_setImage(with: selectedImageURL, completed: nil)
+                newImageView.frame = UIScreen.main.bounds
+                newImageView.backgroundColor = .black
+                newImageView.contentMode = .scaleAspectFit
+                newImageView.isUserInteractionEnabled = true
+                let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
+                newImageView.addGestureRecognizer(tap)
+                self.view.addSubview(newImageView)
+                self.navigationController?.isNavigationBarHidden = true
+                self.tabBarController?.tabBar.isHidden = true
+
+            }
+        }
     }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let size = collectionView.frame.size
-        return CGSize(width: size.width, height: size.height)
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0.0
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0.0
+    
+    @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
+        self.navigationController?.isNavigationBarHidden = false
+        self.tabBarController?.tabBar.isHidden = false
+        sender.view?.removeFromSuperview()
     }
 }
 

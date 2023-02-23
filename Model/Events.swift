@@ -21,7 +21,7 @@ class Events
         
     }
     
-    func addEventObject(user:String, coord:GeoPoint, desc: String, images: Array<UIImage>, time:Date, addy:String, EventUserID:String, EventUsername:String,EventUserPhoto:String)
+    func addEventObject(user:String, coord:GeoPoint, desc: String, images: Array<UIImage>, time:Date, addy:String, EventUserID:String, EventUsername:String,EventUserPhoto:String,promoted:Bool)
     {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
@@ -42,7 +42,8 @@ class Events
         
         eventRef = db.document(documentRef.path)
         
-        db.collection("events").document(event).setData(["description":desc, "time": time,"address": addy, "geohash":hash, "lat": latitude, "lng": longitude,"eventID":event,"EventUserID":EventUserID,"EventUsername":EventUsername,"EventUserPhoto":EventUserPhoto])
+//        db.collection("events").document(event).setData(["description":desc, "time": time,"address": addy, "geohash":hash, "lat": latitude, "lng": longitude,"eventID":event,"EventUserID":EventUserID,"EventUsername":EventUsername,"EventUserPhoto":EventUserPhoto])
+        db.collection("events").document(event).setData(["description":desc, "time": time,"address": addy, "geohash":hash, "lat": latitude, "lng": longitude,"eventID":event,"EventUserID":EventUserID,"isPromoted":promoted])
         
         let newEvent = NSEntityDescription.insertNewObject(forEntityName: "Core_events", into: context)
         
@@ -62,6 +63,7 @@ class Events
                     newEvent.setValue(downloadUrls, forKey: "images")
                     
                     UserCache.shared.clearEventCache()
+                    EventCache.shared.clearCache()
                     try context.save()
                     print("success")
                 } catch {
@@ -377,10 +379,23 @@ class Events
                 let addy = doc.data()?["address"] as? String ?? ""
                 let time = doc.data()!["time"] as! Timestamp
                 let userID = doc.data()?["EventUserID"] as? String ?? ""
-                let userPhoto = doc.data()?["EventUserPhoto"] as? String ?? ""
-                let userName = doc.data()!["EventUsername"] as? String ?? ""
-                let event = Event(eventid:eID, des: des, time: time, ad: addy, im:userPhoto, id:userID, nm:userName)
-                completion(event)
+                
+                self.db.collection("users").document(userID).getDocument{
+                    docu, err in
+                    if let err = err {
+                        print("Error getting event data: \(err)")
+                        return
+                    }
+                    if let docu = docu {
+                        
+                        let userName = docu.data()?["name"] as? String ?? ""
+                        let userPhoto = docu.data()?["image"] as? String ?? ""
+                        let event = Event(eventid:eID, des: des, time: time, ad: addy, im:userPhoto, id:userID, nm:userName)
+                        completion(event)
+                    }
+                    
+                }
+                
             }
         }
     }
@@ -435,67 +450,68 @@ class Events
         let queryBounds = GFUtils.queryBounds(forLocation: center, withRadius: radiusInM)
         var matchingDocs = [QueryDocumentSnapshot]()
         
-        // Check if the events are already cached
-        //        if let cachedEvents = EventCache.shared.getCachedEvents(lat: lat, long: long, distance: distance) {
-        //            matchingDocs = cachedEvents
-        //            completion(matchingDocs)
-        //        } else {
-        var lastDocument: DocumentSnapshot?
-        let limit = 10
-        repeat {
-            group.enter() // enter the group before making the query
-            let twoHoursInSeconds = 7200.0
-            let now = Timestamp(date: Date() - twoHoursInSeconds)
-            
-            print(queryBounds.count)
-            var query = db.collection("events")
-                .order(by: "geohash")
-                .limit(to: limit)
-
-  
-            if let lastDocument = lastDocument {
-                query = query.start(afterDocument: lastDocument)
-            }
-            
-            for bound in queryBounds {
-                query = query.start(at: [bound.startValue]).end(at: [bound.endValue])
-            }
-        
-            query.getDocuments { (snapshot, error) in
-                guard let documents = snapshot?.documents else {
-                    print("Unable to fetch snapshot data. \(String(describing: error))")
-                    return
+//        Check if the events are already cached
+        if let cachedEvents = EventCache.shared.getCachedEvents(lat: lat, long: long, distance: distance)
+        {
+            matchingDocs = cachedEvents
+            completion(matchingDocs)
+        } else {
+            var lastDocument: DocumentSnapshot?
+            let limit = 10
+            repeat {
+                group.enter() // enter the group before making the query
+                let twoHoursInSeconds = 7200.0
+                let now = Timestamp(date: Date() - twoHoursInSeconds)
+                
+                print(queryBounds.count)
+                var query = db.collection("events")
+                    .order(by: "geohash")
+                    .limit(to: limit)
+                
+                
+                if let lastDocument = lastDocument {
+                    query = query.start(afterDocument: lastDocument)
                 }
-//            query.addSnapshotListener { (snapshot, error) in
-//                guard let documents = snapshot?.documents else {
-//                    print("Unable to fetch snapshot data. \(String(describing: error))")
-//                    return
-//                }
-                for document in documents {
-
-                    let eventime = document.data()["time"] as! Timestamp
-                    if ( now.compare(eventime) == .orderedAscending)
-                    {
-                        let lat = document.data()["lat"] as? Double ?? 0
-                        let lng = document.data()["lng"] as? Double ?? 0
-                        let coordinates = CLLocation(latitude: lat, longitude: lng)
-                        let centerPoint = CLLocation(latitude: center.latitude, longitude: center.longitude)
-                        let distance = GFUtils.distance(from: centerPoint, to: coordinates)
-                        if distance <= radiusInM {
-                            matchingDocs.append(document)
+                
+                for bound in queryBounds {
+                    query = query.start(at: [bound.startValue]).end(at: [bound.endValue])
+                }
+                
+                query.getDocuments { (snapshot, error) in
+                    guard let documents = snapshot?.documents else {
+                        print("Unable to fetch snapshot data. \(String(describing: error))")
+                        return
+                    }
+                    //            query.addSnapshotListener { (snapshot, error) in
+                    //                guard let documents = snapshot?.documents else {
+                    //                    print("Unable to fetch snapshot data. \(String(describing: error))")
+                    //                    return
+                    //                }
+                    for document in documents {
+                        
+                        let eventime = document.data()["time"] as! Timestamp
+                        if ( now.compare(eventime) == .orderedAscending)
+                        {
+                            let lat = document.data()["lat"] as? Double ?? 0
+                            let lng = document.data()["lng"] as? Double ?? 0
+                            let coordinates = CLLocation(latitude: lat, longitude: lng)
+                            let centerPoint = CLLocation(latitude: center.latitude, longitude: center.longitude)
+                            let distance = GFUtils.distance(from: centerPoint, to: coordinates)
+                            if distance <= radiusInM {
+                                matchingDocs.append(document)
+                            }
                         }
                     }
+                    lastDocument = documents.last
+                    group.leave() // leave the group after the query is done
                 }
-                lastDocument = documents.last
-                group.leave() // leave the group after the query is done
+            } while lastDocument != nil
+            group.notify(queue: .main) {
+                // cache the events
+                EventCache.shared.cacheEvents(lat: lat, long: long, distance: distance, events: matchingDocs)
+                completion(matchingDocs)
             }
-        } while lastDocument != nil
-        group.notify(queue: .main) {
-            // cache the events
-            //EventCache.shared.cacheEvents(lat: lat, long: long, distance: distance, events: matchingDocs)
-            completion(matchingDocs)
         }
-        //        }
     }
 }
 
